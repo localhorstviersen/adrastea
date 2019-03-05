@@ -5,6 +5,7 @@ class User extends CI_Model {
     private $ID;
     private $username;
     private $password;
+    private $email;
     
     public function setUsername($username) {
         $this->username = $username;
@@ -18,6 +19,10 @@ class User extends CI_Model {
         $this->password = $password;
     }
     
+    public function setEmailAddress($email) {
+        $this->email = $email;
+    }
+
     public function save() {
         $this->db->insert("users",$this);
     }

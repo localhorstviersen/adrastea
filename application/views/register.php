@@ -13,6 +13,14 @@
         </tr>
         <tr>
             <td>
+                E-Mail:
+            </td>
+            <td>
+                <input type="text" name="email">
+            </td>
+        </tr>
+        <tr>
+            <td>
                 Password:
             </td>
             <td>
