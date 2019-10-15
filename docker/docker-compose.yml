@@ -1,0 +1,57 @@
+# Use root/example as user/password credentials
+version: '3.7'
+
+services:
+  db:
+    image: mariadb:10.4.8
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: 123456
+      MYSQL_USER: adrastea
+      MYSQL_PASSWORD: 123456
+      MYSQL_DATABASE: adrastea
+    ports:
+      - 3306:3306
+    volumes:
+      - 'database_volume:/var/lib/mysql'
+    networks:
+      - adrastea
+  portainer:
+    image: portainer/portainer:latest
+    ports:
+      - 9001:9000
+    volumes:
+      - "portainer_volume:/data"
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - adrastea
+  adminer:
+    image: adminer
+    restart: unless-stopped
+    ports:
+      - 8888:8080
+    networks:
+      - adrastea
+  php:
+    build: ./php-apache
+    ports:
+      - 80:80
+    environment:
+      APACHE_DOCUMENT_ROOT: /var/www/html/public
+    volumes:
+      - "./../:/var/www/html"
+    networks:
+      - adrastea
+
+# Networks
+networks:
+  adrastea:
+    driver: bridge
+    internal: false
+
+# Volumes
+volumes:
+  database_volume:
+    driver: local
+  portainer_volume:
+    driver: local
