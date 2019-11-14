@@ -43,6 +43,8 @@
 # app.CSRFRegenerate  = true
 # app.CSRFExcludeURIs = []
 
+# app.site.title = 'Adreastea'
+
 # app.CSPEnabled = false
 
 #--------------------------------------------------------------------
@@ -91,3 +93,9 @@
 #  honeypot.label = 'Fill This Field'
 #  honeypot.name = 'honeypot'
 #  honeypot.template = '<label>{label}</label><input type="text" name="{name}" value=""/>'
+
+#--------------------------------------------------------------------
+# LDAP Settings
+#--------------------------------------------------------------------
+# ldap.host = ''
+# ldap.base.dn = ''

@@ -15,7 +15,12 @@ namespace App\Controllers;
  */
 
 use CodeIgniter\Controller;
+use Config\Services;
 
 class CoreController extends Controller
 {
+    /**
+     * @var array $data
+     */
+    protected $data = [];
 }

@@ -2,11 +2,8 @@
 
 class Home extends CoreController
 {
-	public function index()
-	{
-		return view('welcome_message');
-	}
+    public function index()
+    {
 
-	//--------------------------------------------------------------------
-
+    }
 }
