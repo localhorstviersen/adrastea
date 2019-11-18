@@ -15,12 +15,23 @@ namespace App\Controllers;
  */
 
 use CodeIgniter\Controller;
-use Config\Services;
 
 class CoreController extends Controller
 {
     /**
-     * @var array $data
+     * @var array $global
      */
-    protected $data = [];
+    protected $global = [];
+
+    /**
+     * This method check if the current user is logged in.
+     *
+     * @return bool
+     */
+    protected function isLoggedIn(): bool
+    {
+        $isLoggedIn = session('isLoggedIn');
+
+        return isset($isLoggedIn) && $isLoggedIn;
+    }
 }
