@@ -8,7 +8,8 @@
     "php": ">=7.2",
     "codeigniter4/framework": "^4@rc",
     "ext-ldap": "*",
-    "ext-json": "*"
+    "ext-json": "*",
+    "adldap/adldap": "5.0.0.x-dev"
   },
   "require-dev": {
     "mikey179/vfsstream": "1.6.*",

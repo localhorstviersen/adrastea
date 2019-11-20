@@ -12,15 +12,23 @@
     <link href="/assets/css/signin.css" rel="stylesheet">
 </head>
 <body class="text-center">
-<? // TODO implement error display ?>
 <form class="form-signin" method="post" action="<?= base_url('login/submit') ?>">
-    <img class="mb-4" src="/assets/images/logo.png" alt="" width="153" height="72">
+    <img class="mb-4" src="/assets/images/logo.svg" alt="" width="153" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Bitte logge dich ein</h1>
+    <?php if (!empty($this->data['errorForm'])): ?>
+        <div class="alert alert-danger">
+            <ul>
+                <?php foreach ($this->data['errorForm'] as $error): ?>
+                    <li><?= $error ?></li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    <?php endif; ?>
     <label for="mail" class="sr-only">E-Mail</label>
-    <input type="email" id="mail" class="form-control" placeholder="E-Mail" autofocus>
+    <input type="email" name="mail" id="mail" class="form-control" placeholder="E-Mail" required autofocus>
     <label for="password" class="sr-only">Passwort</label>
-    <input type="password" id="password" class="form-control" placeholder="Passwort" required>
-    <button class="btn btn-lg btn-primary btn-block" type="submit">Einloggen</button>
+    <input type="password" name="password" id="password" class="form-control" placeholder="Passwort" required>
+    <input type="submit" name="submit" class="btn btn-lg btn-primary btn-block" value="Einloggen">
     <p class="mt-5 mb-3 text-muted">&copy; 2019 by Adrastea Project - <a
                 href="https://github.com/localhorstviersen/adrastea">GitHub</a></p>
 </form>
