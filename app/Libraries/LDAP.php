@@ -19,9 +19,11 @@ class LDAP
 
     public function __construct()
     {
+        $controllers = explode(',', env('ldap.host'));
+
         $config = [
             'account_suffix' => env('ldap.accountSuffix'),
-            'domain_controllers' => array(env('ldap.host')),
+            'domain_controllers' => $controllers,
             'base_dn' => env('ldap.baseDn')
         ];
         $this->resource = new Adldap($config);
@@ -32,18 +34,32 @@ class LDAP
         $mailExplode = explode('@', $mail);
 
         try {
-            if (count($mailExplode) === 2) {
-                $mail = $mailExplode[0];
-
-                if ($this->resource->authenticate($mail, $password)) {
-                    return true;
-                }
+            if ((count($mailExplode) === 2) && $this->resource->authenticate($mailExplode[0], $password)) {
+                return true;
             }
         } catch (Exception $exception) {
             return false;
         }
 
         return false;
+    }
+
+    public function getUserInfo(string $mail, string $password)
+    {
+        $mailExplode = explode('@', $mail);
+
+        try {
+            if ((count($mailExplode) === 2)) {
+                $this->resource->authenticate($mailExplode[0], $password);
+                $info = $this->resource->user()->find('lrisse');
+                var_dump($this->resource->getLastError());
+                return null;
+            }
+        } catch (Exception $exception) {
+            return null;
+        }
+
+        return null;
     }
 
     /**

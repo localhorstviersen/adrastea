@@ -41,12 +41,13 @@ class Login extends CoreController
             $password = $this->request->getPost('password');
 
             $ldap = new LDAP();
-            if (!$ldap->checkCredentials($mail, $password)) {
-                $this->session->setFlashdata('errorForm', ['Die eingegebenen Daten stimmen nicht!']);
+            if ($ldap->checkCredentials($mail, $password)) {
+                var_dump($ldap->getUserInfo($mail, $password));
             }
+            $this->session->setFlashdata('errorForm', ['Die eingegebenen Daten stimmen nicht!']);
         } else {
             $this->session->setFlashdata('errorForm', $validation->getErrors());
         }
-        return redirect()->to(base_url('login'));
+        //return redirect()->to(base_url('login'));
     }
 }
