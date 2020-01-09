@@ -5,8 +5,15 @@ namespace App\Controllers;
 
 
 use App\Libraries\LDAP;
+use App\Models\User;
 use Config\Services;
 
+/**
+ * Class Login
+ *
+ * @package App\Controllers
+ * @author  Lars Riße <me@elyday.net>
+ */
 class Login extends CoreController
 {
     public function index()
@@ -19,12 +26,11 @@ class Login extends CoreController
     {
         $validation = Services::validation();
         $rules = [
-            'mail' => [
-                'label' => 'E-Mail',
-                'rules' => 'required|valid_email',
+            'username' => [
+                'label' => 'Benutzername',
+                'rules' => 'required',
                 'errors' => [
-                    'required' => 'Du musst eine E-Mail Adresse angeben!',
-                    'valid_email' => 'Bitte gebe eine korrekte E-Mail Adresse ein'
+                    'required' => 'Du musst einen Benutzernamen angeben!',
                 ]
             ],
             'password' => [
@@ -37,17 +43,27 @@ class Login extends CoreController
         ];
 
         if ($this->validate($rules)) {
-            $mail = $this->request->getPost('mail');
+            $username = $this->request->getPost('username');
             $password = $this->request->getPost('password');
 
             $ldap = new LDAP();
-            if ($ldap->checkCredentials($mail, $password)) {
-                var_dump($ldap->getUserInfo($mail, $password));
+            if ($ldap->checkCredentials($username, $password)) {
+                $userData = $ldap->getUserData($username);
+                $userModel = new User();
+
+                if ($userData !== null && $userModel->saveOrUpdateByUserData($userData)) {
+                    $this->session->set('isLoggedIn', true);
+                    $this->session->set('userSId', $userData->sId);
+                    return redirect()->to(base_url('home'));
+                }
+
+                $this->session->setFlashdata('errorForm', ['Beim Login ist ein Fehler aufgetreten!']);
+            } else {
+                $this->session->setFlashdata('errorForm', ['Die eingegebenen Daten stimmen nicht!']);
             }
-            $this->session->setFlashdata('errorForm', ['Die eingegebenen Daten stimmen nicht!']);
         } else {
             $this->session->setFlashdata('errorForm', $validation->getErrors());
         }
-        //return redirect()->to(base_url('login'));
+        return redirect()->to(base_url('login'));
     }
 }

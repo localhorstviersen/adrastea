@@ -24,8 +24,8 @@
             </ul>
         </div>
     <?php endif; ?>
-    <label for="mail" class="sr-only">E-Mail</label>
-    <input type="email" name="mail" id="mail" class="form-control" placeholder="E-Mail" required autofocus>
+    <label for="username" class="sr-only">Benutzername</label>
+    <input type="text" name="username" id="username" class="form-control" placeholder="Benutzername" required autofocus>
     <label for="password" class="sr-only">Passwort</label>
     <input type="password" name="password" id="password" class="form-control" placeholder="Passwort" required>
     <input type="submit" name="submit" class="btn btn-lg btn-primary btn-block" value="Einloggen">

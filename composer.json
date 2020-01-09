@@ -9,7 +9,7 @@
     "codeigniter4/framework": "^4@rc",
     "ext-ldap": "*",
     "ext-json": "*",
-    "adldap/adldap": "5.0.0.x-dev"
+    "adldap2/adldap2": "^10.2"
   },
   "require-dev": {
     "mikey179/vfsstream": "1.6.*",
