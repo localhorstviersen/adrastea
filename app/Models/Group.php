@@ -11,6 +11,8 @@ use CodeIgniter\Model;
  * Class Group
  *
  * @package App\Models
+ * @author  Lars Riße <me@elyday.net>
+ *
  * @property string $sId
  * @property string $name
  */
@@ -43,5 +45,19 @@ class Group extends Model
                 );
             }
         }
+    }
+
+    /**
+     * This method will retrieve all groups belong to an user.
+     *
+     * @param string $userSId
+     *
+     * @return Group[]
+     */
+    public function getGroupsByUserSId(string $userSId): array
+    {
+        return $this->join('user_group', 'user_group.groupSId = group.sId')
+            ->where('user_group.userSId', $this->sId)
+            ->findAll();
     }
 }

@@ -12,7 +12,7 @@
     <link href="/assets/css/signin.css" rel="stylesheet">
 </head>
 <body class="text-center">
-<form class="form-signin" method="post" action="<?= base_url('login/submit') ?>">
+<form class="form-signin" method="post" action="<?= base_url('login') ?>">
     <img class="mb-4" src="/assets/images/logo.svg" alt="" width="153" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Bitte logge dich ein</h1>
     <?php if (!empty($this->data['errorForm'])): ?>
@@ -29,7 +29,7 @@
     <label for="password" class="sr-only">Passwort</label>
     <input type="password" name="password" id="password" class="form-control" placeholder="Passwort" required>
     <input type="submit" name="submit" class="btn btn-lg btn-primary btn-block" value="Einloggen">
-    <p class="mt-5 mb-3 text-muted">&copy; 2019 by Adrastea Project - <a
+    <p class="mt-5 mb-3 text-muted">&copy; 2019 by Adrstea Project - <a
                 href="https://github.com/localhorstviersen/adrastea">GitHub</a></p>
 </form>
 </body>

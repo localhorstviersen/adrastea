@@ -16,7 +16,7 @@ use Psr\Log\LoggerInterface;
  * @package App\Controllers
  * @author  Lars Riße <me@elyday.net>
  */
-class CoreController extends Controller
+abstract class CoreController extends Controller
 {
     public const SESSION_LOGGED_IN = 'isLoggedIn';
     public const SESSION_USER_SID = 'userSId';
@@ -42,9 +42,11 @@ class CoreController extends Controller
         $this->session = Services::session();
 
         if ($this->isLoggedIn()) {
+            $this->global['user'] = $this->user;
             $this->global['fullName'] = $this->user->firstName . ' ' . $this->user->surname;
         }
 
+        $this->global['successForm'] = $this->session->getFlashdata('successForm');
         $this->global['errorForm'] = $this->session->getFlashdata('errorForm');
     }
 
@@ -70,10 +72,21 @@ class CoreController extends Controller
                 }
 
                 $this->user = $userModel->first();
+                $this->user->loadRights();
             }
             return true;
         }
 
         return false;
+    }
+
+    /**
+     * This method check if the incoming request a post request.
+     *
+     * @return bool
+     */
+    protected function isPost(): bool
+    {
+        return $this->request->getMethod() === 'post';
     }
 }

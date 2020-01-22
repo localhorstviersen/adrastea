@@ -1,5 +1,7 @@
 <?php namespace Config;
 
+use CodeIgniter\Router\RouteCollection;
+
 /**
  * --------------------------------------------------------------------
  * URI Routing
@@ -62,7 +64,7 @@ $routes->setDefaultController('Home');
 $routes->setDefaultMethod('index');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override();
-$routes->setAutoRoute(true);
+$routes->setAutoRoute(false);
 
 /**
  * --------------------------------------------------------------------
@@ -72,7 +74,31 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
+// --- Controllers/Home::class
 $routes->get('/', 'Home::index');
+$routes->get('home', 'Home::index');
+
+// --- Controllers/Login::class
+$routes->add('login', 'Login::index');
+
+// ---- Controllers/Admin
+$routes->group('admin', static function ($routes) {
+    /** @var RouteCollection $routes */
+
+    // --- Controllers/Admin/User::class
+    $routes->get('user', 'Admin\User::index');
+    $routes->add('user/info/(:any)', 'Admin\User::info/$1'); // DEATH ROUTE!
+
+    // --- Controllers/Admin/Group::class
+    $routes->get('group', 'Admin\Group::index');
+    $routes->add('group/assign/(:any)', 'Admin\Group::assign/$1'); // DEATH ROUTE!
+
+    // --- Controllers/Admin/Roles::class
+    $routes->get('roles', 'Admin\Roles::index');
+    $routes->add('roles/create', 'Admin\Roles::create');
+    $routes->add('roles/edit/(:num)', 'Admin\Roles::edit/$1');
+    $routes->add('roles/delete/(:num)', 'Admin\Roles::delete/$1');
+});
 
 /**
  * --------------------------------------------------------------------

@@ -16,6 +16,7 @@ use App\Models\DTO\UserData;
  * Class LDAP
  *
  * @package App\Helpers
+ * @author  Lars Riße <me@elyday.net>
  */
 class LDAP
 {

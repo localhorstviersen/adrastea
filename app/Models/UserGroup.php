@@ -11,8 +11,10 @@ use CodeIgniter\Model;
  * Class UserGroup
  *
  * @package App\Models
- * @property string userSId
- * @property string groupSId
+ * @author  Lars Riße <me@elyday.net>
+ *
+ * @property string $userSId
+ * @property string $groupSId
  */
 class UserGroup extends Model
 {
