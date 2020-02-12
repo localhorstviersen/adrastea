@@ -2,6 +2,12 @@
 
 use CodeIgniter\Database\Migration;
 
+/**
+ * Class User
+ *
+ * @package App\Database\Migrations
+ * @author  Lars Riße <me@elyday.net>
+ */
 class User extends Migration
 {
     public function up()
@@ -16,7 +22,7 @@ class User extends Migration
                     'type' => 'VARCHAR',
                     'constraint' => '100'
                 ],
-                'firstname' => [
+                'firstName' => [
                     'type' => 'VARCHAR',
                     'constraint' => '100'
                 ],

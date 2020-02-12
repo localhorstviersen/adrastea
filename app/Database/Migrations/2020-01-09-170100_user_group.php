@@ -2,6 +2,12 @@
 
 use CodeIgniter\Database\Migration;
 
+/**
+ * Class UserGroup
+ *
+ * @package App\Database\Migrations
+ * @author  Lars Riße <me@elyday.net>
+ */
 class UserGroup extends Migration
 {
     public function up()
