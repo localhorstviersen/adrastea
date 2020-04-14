@@ -34,12 +34,13 @@ services:
       - adrastea
   php:
     build: ./php-apache
+    image: php-ad
     ports:
       - 80:80
     environment:
       APACHE_DOCUMENT_ROOT: /var/www/html/public
     volumes:
-      - "./../:/var/www/html"
+      - "./../src/:/var/www/html"
     networks:
       - adrastea
 
