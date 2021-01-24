@@ -6,5 +6,7 @@ return [
     'edit' => 'Bearbeiten',
     'delete' => 'Löschen',
     'create' => 'Erstellen',
-    'noPermission' => 'Du hast keine Zugriffsberechtigung'
+    'noPermission' => 'Du hast keine Zugriffsberechtigung',
+    'yes' => 'Ja',
+    'no' => 'Nein'
 ];

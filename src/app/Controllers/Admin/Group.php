@@ -7,7 +7,7 @@ namespace App\Controllers\Admin;
 use App\Controllers\CoreController;
 use App\Models\GroupRoles;
 use App\Models\Role;
-use App\Models\RoleRights;
+use App\Models\Roles\Rights;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\View\Table;
 
@@ -30,7 +30,7 @@ class Group extends CoreController
             return $valid;
         }
 
-        $this->global['title'] = lang('group.title');
+        $this->global['title'] = lang('group.title.title');
 
         $customSettings = [
             'table_open' => '<table class="table table-bordered" id="groups" width="100%" cellspacing="0">'
@@ -126,7 +126,7 @@ class Group extends CoreController
         }
 
         $this->global['title'] = lang(
-            'group.assign.title',
+            'group.title.assign.title',
             ['name' => $this->global['group']->name]
         );
         return view('pages/admin/group/assign', $this->global);
@@ -141,7 +141,7 @@ class Group extends CoreController
             return redirect()->to(base_url('login'));
         }
 
-        if (!$this->user->hasRight(RoleRights::RIGHT_GLOBAL_ADMIN_GROUP)) {
+        if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_GROUP)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
             return redirect()->to(base_url(''));
         }

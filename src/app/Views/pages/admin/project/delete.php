@@ -10,18 +10,18 @@
         <div class="card-body">
             <form method="post" action="<?= base_url('admin/project/delete/' . $this->data['project']->id) ?>">
                 <div class="form-group">
-                    <label for="name"><?= lang('project.form.name') ?></label>
+                    <label for="name"><?= lang('admin.project.form.name.name') ?></label>
                     <input type="text" maxlength="50" class="form-control" id="name" name="name"
                            aria-describedby="nameHelp" value="<?= $this->data['project']->name ?>" disabled>
-                    <small id="nameHelp" class="form-text text-muted"><?= lang('project.form.name.help') ?></small>
+                    <small id="nameHelp" class="form-text text-muted"><?= lang('admin.project.form.name.help') ?></small>
                 </div>
 
                 <div class="form-group">
-                    <label for="description"><?= lang('project.form.description') ?></label>
+                    <label for="description"><?= lang('admin.project.form.description.name') ?></label>
                     <input type="text" maxlength="500" class="form-control" id="description" name="description"
                            aria-describedby="descriptionHelp" value="<?= $this->data['project']->description ?>" disabled>
                     <small id="descriptionHelp" class="form-text text-muted"><?= lang(
-                            'project.form.description.help'
+                            'admin.project.form.description.help'
                         ) ?></small>
                 </div>
                 <input type="submit" name="submit" class="btn btn-primary" value="<?= lang('general.delete') ?>">
@@ -31,7 +31,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('titleButtons') ?>
-    <a href="<?= base_url('admin/role') ?>"
+    <a href="<?= base_url('admin/project') ?>"
        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50"></i> <?= lang('general.back') ?>
     </a>

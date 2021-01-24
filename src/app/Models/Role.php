@@ -4,6 +4,7 @@
 namespace App\Models;
 
 
+use App\Models\Roles\Rights;
 use CodeIgniter\Model;
 
 /**
@@ -31,13 +32,11 @@ class Role extends Model
      */
     public static function findByUserSid(string $userSId): array
     {
-        $rolesModel = new Role();
+        $rolesModel = new self();
 
-        $groupRoles = $rolesModel->join('group_roles', 'group_roles.roleId = roles.id')
+        return $rolesModel->join('group_roles', 'group_roles.roleId = roles.id')
             ->join('user_group', 'user_group.groupSId = group_roles.groupSId')
             ->where('user_group.userSId', $userSId)->findAll();
-
-        return $groupRoles;
     }
 
     /**
@@ -48,9 +47,9 @@ class Role extends Model
     public function getRights(): array
     {
         $result = [];
-        $rights = (new RoleRights())->where('roleId', $this->id)->findAll();
+        $rights = (new Rights())->where('roleId', $this->id)->findAll();
 
-        /** @var RoleRights $right */
+        /** @var Rights $right */
         foreach ($rights as $right) {
             $result[] = $right->right;
         }

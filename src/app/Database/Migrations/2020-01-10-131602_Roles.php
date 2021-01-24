@@ -77,7 +77,6 @@ class Roles extends Migration
     public function down(): void
     {
         $this->forge->dropTable('roles');
-        $this->forge->dropTable('user_roles');
         $this->forge->dropTable('group_roles');
         $this->forge->dropTable('roles_rights');
     }

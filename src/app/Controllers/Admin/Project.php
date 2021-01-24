@@ -5,8 +5,11 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\CoreController;
 use App\Libraries\Util;
+use App\Models\Project\Ticket\Field;
 use App\Models\ProjectRoleRights;
-use App\Models\RoleRights;
+use App\Models\Roles\Rights;
+use App\Models\Project\Ticket\Status;
+use App\Models\Project\Ticket\Types;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\View\Table;
 use Config\Services;
@@ -28,7 +31,7 @@ class Project extends CoreController
             return $valid;
         }
 
-        $this->global['title'] = lang('admin.project.title');
+        $this->global['title'] = lang('admin.project.title.title');
 
         $customSettings = [
             'table_open' => '<table class="table table-bordered" id="projects" width="100%" cellspacing="0">'
@@ -80,28 +83,9 @@ class Project extends CoreController
 
         if ($this->isPost()) {
             $validation = Services::validation();
-            $rules = [
-                'name' => [
-                    'label' => lang('admin.project.form.name'),
-                    'rules' => 'required|alpha_numeric_space|max_length[50]',
-                    'errors' => [
-                        'required' => lang('admin.project.form.name.validation.required'),
-                        'alpha_numeric_space' => lang('admin.project.form.name.validation.alpha_numeric_space'),
-                        'max_length' => lang('admin.project.form.name.validation.max_length'),
-                    ]
-                ],
-                'description' => [
-                    'label' => lang('admin.project.form.description'),
-                    'rules' => 'required|alpha_numeric_space|max_length[500]',
-                    'errors' => [
-                        'required' => lang('admin.project.form.description.validation.required'),
-                        'alpha_numeric_space' => lang('admin.project.form.description.validation.alpha_numeric_space'),
-                        'max_length' => lang('admin.project.form.description.validation.max_length'),
-                    ]
-                ]
-            ];
+            $validation->setRuleGroup('projectRules');
 
-            if (!$this->validate($rules)) {
+            if (!$validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
                 return redirect()->to(base_url('admin/project/create'));
@@ -112,9 +96,28 @@ class Project extends CoreController
                 'name' => $this->request->getPost('name'),
                 'description' => $this->request->getPost('description')
             ];
-            $projectModel->insert($data);
+            $projectId = $projectModel->insert($data);
 
-            $this->session->setFlashdata('successForm', lang('admin.project.form.create.success'));
+            $ticketTypesModel = new Types();
+            $ticketStatusModel = new Status();
+            $ticketFieldModel = new Field();
+
+            foreach (Types::$defaultTypes as $defaultType) {
+                $ticketTypesModel->insert(['name' => $defaultType, 'projectId' => $projectId]);
+            }
+
+            foreach (Status::$defaultStatus as $defaultStatus) {
+                $ticketStatusModel->insert(['name' => $defaultStatus, 'projectId' => $projectId]);
+            }
+
+            foreach (Field::$systemFields as $field) {
+                $field['projectId'] = $projectId;
+                $field['systemField'] = 1;
+                $field['required'] = 1;
+                $ticketFieldModel->insert($field);
+            }
+
+            $this->session->setFlashdata('successForm', lang('admin.project.form.createSuccess'));
             return redirect()->to(base_url('admin/project'));
         }
 
@@ -133,28 +136,9 @@ class Project extends CoreController
 
         if ($this->isPost()) {
             $validation = Services::validation();
-            $rules = [
-                'name' => [
-                    'label' => lang('admin.project.form.name'),
-                    'rules' => 'required|alpha_numeric_space|max_length[50]',
-                    'errors' => [
-                        'required' => lang('admin.project.form.name.validation.required'),
-                        'alpha_numeric_space' => lang('admin.project.form.name.validation.alpha_numeric_space'),
-                        'max_length' => lang('admin.project.form.name.validation.max_length'),
-                    ]
-                ],
-                'description' => [
-                    'label' => lang('admin.project.form.description'),
-                    'rules' => 'required|alpha_numeric_space|max_length[500]',
-                    'errors' => [
-                        'required' => lang('admin.project.form.description.validation.required'),
-                        'alpha_numeric_space' => lang('admin.project.form.description.validation.alpha_numeric_space'),
-                        'max_length' => lang('admin.project.form.description.validation.max_length'),
-                    ]
-                ]
-            ];
+            $validation->setRuleGroup('projectRules');
 
-            if (!$this->validate($rules)) {
+            if (!$validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
                 return redirect()->to(base_url('admin/project/edit/' . $projectId));
@@ -167,7 +151,7 @@ class Project extends CoreController
             ];
             $projectModel->update($projectId, $data);
 
-            $this->session->setFlashdata('successForm', lang('admin.project.form.edit.success'));
+            $this->session->setFlashdata('successForm', lang('admin.project.form.editSuccess'));
             return redirect()->to(base_url('admin/project'));
         }
 
@@ -188,7 +172,7 @@ class Project extends CoreController
             $projectModel = new \App\Models\Project();
             $projectModel->delete($projectId);
 
-            $this->session->setFlashdata('successForm', lang('admin.project.form.delete.success'));
+            $this->session->setFlashdata('successForm', lang('admin.project.form.deleteSuccess'));
             return redirect()->to(base_url('admin/project'));
         }
 
@@ -238,7 +222,7 @@ class Project extends CoreController
                 $projectRoleRightsModel->save($data);
             }
 
-            $this->session->setFlashdata('successForm', lang('admin.project.form.managePermissions.success'));
+            $this->session->setFlashdata('successForm', lang('admin.project.form.managePermissionsSuccess'));
             return redirect()->to(base_url('admin/project'));
         }
 
@@ -274,7 +258,8 @@ class Project extends CoreController
             $table->addRow($item);
         }
 
-        $this->global['title'] = lang('admin.project.title.managePermissions', ['name' => $this->global['project']->name]);
+        $this->global['title'] =
+            lang('admin.project.title.managePermissions', ['name' => $this->global['project']->name]);
         $this->global['table'] = $table->generate();
 
         return view('pages/admin/project/managePermissions', $this->global);
@@ -289,7 +274,7 @@ class Project extends CoreController
             return redirect()->to(base_url('login'));
         }
 
-        if (!$this->user->hasRight(RoleRights::RIGHT_GLOBAL_ADMIN_PROJECT_MANAGE)) {
+        if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_PROJECT_MANAGE)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
             return redirect()->to(base_url(''));
         }

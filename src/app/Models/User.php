@@ -25,7 +25,14 @@ class User extends Model
     protected $table = 'user';
     protected $returnType = self::class;
     protected $primaryKey = 'sId';
-    protected $allowedFields = ['sId', 'username', 'firstName', 'surname', 'mail'];
+    protected $allowedFields
+        = [
+            'sId',
+            'username',
+            'firstName',
+            'surname',
+            'mail'
+        ];
     protected $useTimestamps = true;
 
     /**
@@ -33,8 +40,20 @@ class User extends Model
      */
     private $rights = [];
 
+    public static function getFullNameBySId(string $sId): ?string
+    {
+        /** @var self|null $model */
+        $model = (new User())->find($sId);
+
+        if (!$model instanceof self) {
+            return null;
+        }
+
+        return $model->getFullName();
+    }
+
     /**
-     * @param UserData $userData
+     * @param  UserData  $userData
      *
      * @return bool
      */
@@ -55,7 +74,10 @@ class User extends Model
             }
 
             $userGroup = new UserGroup();
-            $userGroup->updateRelationsByUserSid($userData->sId, $userData->groups);
+            $userGroup->updateRelationsByUserSid(
+                $userData->sId,
+                $userData->groups
+            );
         } catch (\ReflectionException $e) {
             return false;
         }
@@ -72,7 +94,10 @@ class User extends Model
     {
         $groupModel = new Group();
 
-        return $groupModel->join('user_group', 'user_group.groupSId = group.sId')->where(
+        return $groupModel->join(
+            'user_group',
+            'user_group.groupSId = group.sId'
+        )->where(
             'user_group.userSId',
             $this->sId
         )->findAll();
@@ -86,10 +111,11 @@ class User extends Model
         $roles = Role::findByUserSid($this->sId);
         $rights = [];
 
-        /** @var Role $role */
         foreach ($roles as $role) {
-            $rights = array_merge($rights, $role->getRights());
+            $rights[] = $role->getRights();
         }
+
+        $rights = array_merge([], ...$rights);
 
         $rights = array_unique($rights);
 
@@ -99,7 +125,7 @@ class User extends Model
     /**
      * This method will check if a user has the provided right.
      *
-     * @param string $right
+     * @param  string  $right
      *
      * @return bool
      */
@@ -111,7 +137,7 @@ class User extends Model
     /**
      * This method will check if a user has the provided rights.
      *
-     * @param string ...$rights
+     * @param  string  ...$rights
      *
      * @return bool
      */
@@ -129,22 +155,71 @@ class User extends Model
     /**
      * This method will get all projects where the given user has a view permission.
      *
-     * @return array|null
+     * @return array
      */
-    public function getProjects(): ?array
+    public function getProjects(): array
     {
         $roles = Role::findByUserSid($this->sId);
         $roleIds = [];
 
-        /** @var Role $role */
         foreach ($roles as $role) {
             $roleIds[] = $role->id;
         }
 
+        if (empty($roleIds)) {
+            return [];
+        }
+
         $projectModel = new Project();
-        return $projectModel->select('projects.*')->join('project_role_rights', 'project_role_rights.projectId = projects.id')->where(
+        $builder = $projectModel->select('projects.*')->join(
+            'project_role_rights',
+            'project_role_rights.projectId = projects.id'
+        )->where(
             'project_role_rights.right',
             ProjectRoleRights::RIGHT_PROJECT_VIEW
-        )->whereIn('project_role_rights.roleId', $roleIds)->findAll();
+        )->whereIn('project_role_rights.roleId', $roleIds);
+
+        return $builder->findAll();
+    }
+
+    /**
+     * This method check if the user has the provided right on the provided project.
+     *
+     * @param  Project  $project
+     * @param  string   $right
+     *
+     * @return bool
+     */
+    public function hasProjectRight(Project $project, string $right): bool
+    {
+        $roles = Role::findByUserSid($this->sId);
+        $roleIds = [];
+
+        foreach ($roles as $role) {
+            $roleIds[] = $role->id;
+        }
+
+        $rights = $project->select('projects.*')->join(
+            'project_role_rights',
+            'project_role_rights.projectId = projects.id'
+        )->where(
+            'project_role_rights.right',
+            $right
+        )->whereIn('project_role_rights.roleId', $roleIds)->where(
+            'projects.id',
+            $project->id
+        )->findAll();
+
+        return count($rights) === 1;
+    }
+
+    /**
+     * This method will return the firstname and surname of this user as one string.
+     *
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        return sprintf('%s %s', $this->firstName, $this->surname);
     }
 }
