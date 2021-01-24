@@ -10,7 +10,8 @@ use CodeIgniter\Database\Migration;
  */
 class User extends Migration
 {
-    public function up()
+    /** @inheritDoc */
+    public function up(): void
     {
         $this->forge->addField(
             [
@@ -46,7 +47,8 @@ class User extends Migration
         $this->forge->createTable('user');
     }
 
-    public function down()
+    /** @inheritDoc */
+    public function down(): void
     {
         $this->forge->dropTable('user');
     }

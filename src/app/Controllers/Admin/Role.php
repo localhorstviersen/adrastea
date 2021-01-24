@@ -5,7 +5,7 @@ namespace App\Controllers\Admin;
 
 
 use App\Controllers\CoreController;
-use App\Models\RoleRights;
+use App\Models\Roles\Rights;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\View\Table;
 use Config\Services;
@@ -27,7 +27,7 @@ class Role extends CoreController
             return $valid;
         }
 
-        $this->global['title'] = lang('role.title');
+        $this->global['title'] = lang('role.title.title');
 
         $customSettings = [
             'table_open' => '<table class="table table-bordered" id="role" width="100%" cellspacing="0">'
@@ -76,18 +76,9 @@ class Role extends CoreController
 
         if ($this->isPost()) {
             $validation = Services::validation();
-            $rules = [
-                'name' => [
-                    'label' => lang('role.form.name'),
-                    'rules' => 'required|alpha_numeric_space',
-                    'errors' => [
-                        'required' => lang('role.form.name.validation.required'),
-                        'alpha_numeric_space' => lang('role.form.name.validation.alpha_numeric_space'),
-                    ]
-                ]
-            ];
+            $validation->setRuleGroup('roleRules');
 
-            if (!$this->validate($rules)) {
+            if (!$validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
                 return redirect()->to(base_url('admin/role/create'));
@@ -102,7 +93,7 @@ class Role extends CoreController
             return redirect()->to(base_url('admin/role'));
         }
 
-        $this->global['globalRights'] = RoleRights::getAllGlobalRights();
+        $this->global['globalRights'] = Rights::getAllGlobalRights();
         $this->global['title'] = lang('role.title.create');
         return view('pages/admin/role/create', $this->global);
     }
@@ -116,7 +107,7 @@ class Role extends CoreController
     public function edit(int $roleId)
     {
         $roleModel = new \App\Models\Role();
-        $roleRightsModel = new RoleRights();
+        $roleRightsModel = new Rights();
         $valid = $this->isRequestValid($roleId);
 
         if ($valid !== null) {
@@ -125,18 +116,9 @@ class Role extends CoreController
 
         if ($this->isPost()) {
             $validation = Services::validation();
-            $rules = [
-                'name' => [
-                    'label' => lang('role.form.name'),
-                    'rules' => 'required|alpha_numeric_space',
-                    'errors' => [
-                        'required' => lang('form.name.validation.required'),
-                        'alpha_numeric_space' => lang('form.name.validation.alpha_numeric_space'),
-                    ]
-                ]
-            ];
+            $validation->setRuleGroup('roleRules');
 
-            if (!$this->validate($rules)) {
+            if (!$validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
                 return redirect()->to(base_url('admin/role/edit/' . $roleId));
@@ -150,13 +132,13 @@ class Role extends CoreController
             return redirect()->to(base_url('admin/role'));
         }
 
-        $this->global['globalRights'] = RoleRights::getAllGlobalRights();
+        $this->global['globalRights'] = Rights::getAllGlobalRights();
         $this->global['globalRightActive'] = [];
 
         foreach ($this->global['globalRights'] as $key => $value) {
             $roleRight = $roleRightsModel->where('roleId', $roleId)->where('right', $key)->find();
             $this->global['globalRightActive'][$key] =
-                count($roleRight) === 1 && $roleRight[0] instanceof RoleRights;
+                count($roleRight) === 1 && $roleRight[0] instanceof Rights;
         }
 
         $this->global['title'] = lang('role.title.edit', ['name' => $this->global['role']->name]);
@@ -193,7 +175,7 @@ class Role extends CoreController
             return redirect()->to(base_url('login'));
         }
 
-        if (!$this->user->hasRight(RoleRights::RIGHT_GLOBAL_ADMIN_ROLE)) {
+        if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_ROLE)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
             return redirect()->to(base_url(''));
         }
@@ -220,7 +202,7 @@ class Role extends CoreController
      */
     private function updateGlobalRights(int $roleId): void
     {
-        $roleRightsModel = new RoleRights();
+        $roleRightsModel = new Rights();
         $posts = $this->request->getPost();
         $globalRights = [];
 

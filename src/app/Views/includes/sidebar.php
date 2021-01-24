@@ -9,32 +9,51 @@
 
     <hr class="sidebar-divider my-0">
 
-    <li class="nav-item active">
+    <li class="nav-item <?php if(\Config\Services::uri()->getSegment(1) === 'home'): ?>active<?php endif; ?>">
         <a class="nav-link" href="<?= base_url('home') ?>">
             <i class="fas fa-fw fa-tachometer-alt"></i>
             <span>Home</span>
         </a>
     </li>
 
-    <li class="nav-item">
-        <a class="nav-link" href="<?= base_url('project') ?>">
-            <i class="fas fa-fw fa-project-diagram"></i>
-            <span>Deine Projekte</span>
-        </a>
-    </li>
+    <hr class="sidebar-divider">
+    <div class="sidebar-heading">Deine Projeke</div>
 
-    <?php if ($this->data['user']->hasRight(\App\Models\RoleRights::RIGHT_GLOBAL_ADMIN)): ?>
+    <?php foreach ($this->data['user']->getProjects() as $project): ?>
+        <li class="nav-item <?php if(\Config\Services::uri()->getSegment(1) === 'project'): ?>active<?php endif; ?>">
+            <a class="nav-link collapsed" href="#" data-toggle="collapse"
+               data-target="#project-<?= $project->id ?>" aria-expanded="true"
+               aria-controls="collapseTwo">
+                <i class="fas fa-fw fa-users"></i>
+                <span><?= $project->name ?></span>
+            </a>
+            <div id="project-<?= $project->id ?>" class="collapse <?php if(\Config\Services::uri()->getSegment(1) === 'project'): ?>show<?php endif; ?>"
+                 aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div class="bg-white py-2 collapse-inner rounded">
+                    <a class="collapse-item" href="<?= base_url('project/' . $project->id . '/start') ?>">Start</a>
+                    <a class="collapse-item" href="<?= base_url('project/' . $project->id . '/backlog') ?>">Backlog</a>
+
+                    <?php if ($this->data['user']->hasProjectRight($project, \App\Models\ProjectRoleRights::RIGHT_PROJECT_ADMIN)): ?>
+                        <a class="collapse-item" href="<?= base_url('project/' . $project->id . '/admin/general') ?>">Admin</a>
+                    <?php endif; ?>
+                </div>
+            </div>
+        </li>
+    <?php endforeach; ?>
+
+    <?php if ($this->data['user']->hasRight(\App\Models\Roles\Rights::RIGHT_GLOBAL_ADMIN)): ?>
         <hr class="sidebar-divider">
         <div class="sidebar-heading">Administration</div>
 
-        <?php if ($this->data['user']->hasRight(\App\Models\RoleRights::RIGHT_GLOBAL_ADMIN_PROJECT_MANAGE)): ?>
+        <?php if ($this->data['user']->hasRight(\App\Models\Roles\Rights::RIGHT_GLOBAL_ADMIN_PROJECT_MANAGE)): ?>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#projectManagement"
                    aria-expanded="true" aria-controls="collapseTwo">
                     <i class="fas fa-fw fa-users"></i>
                     <span>Projektverwaltung</span>
                 </a>
-                <div id="projectManagement" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                <div id="projectManagement" class="collapse" aria-labelledby="headingTwo"
+                     data-parent="#accordionSidebar">
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Projektverwaltung:</h6>
 
@@ -45,9 +64,9 @@
         <?php endif; ?>
 
         <?php if ($this->data['user']->hasOneRight(
-            \App\Models\RoleRights::RIGHT_GLOBAL_ADMIN_GROUP,
-            \App\Models\RoleRights::RIGHT_GLOBAL_ADMIN_USER,
-            \App\Models\RoleRights::RIGHT_GLOBAL_ADMIN_ROLE
+            \App\Models\Roles\Rights::RIGHT_GLOBAL_ADMIN_GROUP,
+            \App\Models\Roles\Rights::RIGHT_GLOBAL_ADMIN_USER,
+            \App\Models\Roles\Rights::RIGHT_GLOBAL_ADMIN_ROLE
         )): ?>
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#" data-toggle="collapse" data-target="#userManagement"
@@ -59,15 +78,15 @@
                     <div class="bg-white py-2 collapse-inner rounded">
                         <h6 class="collapse-header">Benutzerverwaltung:</h6>
 
-                        <?php if ($this->data['user']->hasRight(\App\Models\RoleRights::RIGHT_GLOBAL_ADMIN_GROUP)): ?>
+                        <?php if ($this->data['user']->hasRight(\App\Models\Roles\Rights::RIGHT_GLOBAL_ADMIN_GROUP)): ?>
                             <a class="collapse-item" href="<?= base_url('admin/group') ?>">Gruppen</a>
                         <?php endif; ?>
 
-                        <?php if ($this->data['user']->hasRight(\App\Models\RoleRights::RIGHT_GLOBAL_ADMIN_USER)): ?>
+                        <?php if ($this->data['user']->hasRight(\App\Models\Roles\Rights::RIGHT_GLOBAL_ADMIN_USER)): ?>
                             <a class="collapse-item" href="<?= base_url('admin/user') ?>">Benutzer</a>
                         <?php endif; ?>
 
-                        <?php if ($this->data['user']->hasRight(\App\Models\RoleRights::RIGHT_GLOBAL_ADMIN_ROLE)): ?>
+                        <?php if ($this->data['user']->hasRight(\App\Models\Roles\Rights::RIGHT_GLOBAL_ADMIN_ROLE)): ?>
                             <a class="collapse-item" href="<?= base_url('admin/role') ?>">Benutzerrollen</a>
                         <?php endif; ?>
                     </div>

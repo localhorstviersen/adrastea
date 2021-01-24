@@ -6,7 +6,7 @@ namespace App\Controllers\Admin;
 
 use App\Controllers\CoreController;
 use App\Libraries\Util;
-use App\Models\RoleRights;
+use App\Models\Roles\Rights;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\I18n\Time;
 use CodeIgniter\View\Table;
@@ -72,7 +72,7 @@ class User extends CoreController
             return redirect()->to(base_url('login'));
         }
 
-        if (!$this->user->hasRight(RoleRights::RIGHT_GLOBAL_ADMIN_USER)) {
+        if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_USER)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
             return redirect()->to(base_url(''));
         }

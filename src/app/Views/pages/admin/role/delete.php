@@ -10,7 +10,7 @@
         <div class="card-body">
             <form method="post" action="<?= base_url('admin/role/delete/' . $this->data['role']->id) ?>">
                 <div class="form-group">
-                    <label for="name"><?= lang('role.form.name') ?></label>
+                    <label for="name"><?= lang('role.form.name.name') ?></label>
                     <input type="text" class="form-control" id="name" aria-describedby="nameHelp"
                            value="<?= $this->data['role']->name ?>" required disabled>
                 </div>

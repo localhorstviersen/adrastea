@@ -19,7 +19,7 @@ Next, all you have to do is `docker-compose up -d` and the docker containers are
 
 ### PHP-Apache
 
-We use as base image the official [PHP-Apache Docker Image](https://hub.docker.com/_/php) with PHP version 7.2.
+We use as base image the official [PHP-Apache Docker Image](https://hub.docker.com/_/php) with PHP version 7.4.
 
 Die folgenden zusätzlichen PHP Erweiterungen werden im `Dockerfile` installiert:
 

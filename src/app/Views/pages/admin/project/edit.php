@@ -10,18 +10,18 @@
         <div class="card-body">
             <form method="post" action="<?= base_url('admin/project/edit/' . $this->data['project']->id) ?>">
                 <div class="form-group">
-                    <label for="name"><?= lang('project.form.name') ?></label>
+                    <label for="name"><?= lang('admin.project.form.name.name') ?></label>
                     <input type="text" maxlength="50" class="form-control" id="name" name="name"
                            aria-describedby="nameHelp" value="<?= $this->data['project']->name ?>" required>
-                    <small id="nameHelp" class="form-text text-muted"><?= lang('project.form.name.help') ?></small>
+                    <small id="nameHelp" class="form-text text-muted"><?= lang('admin.project.form.name.help') ?></small>
                 </div>
 
                 <div class="form-group">
-                    <label for="description"><?= lang('project.form.description') ?></label>
+                    <label for="description"><?= lang('admin.project.form.description.name') ?></label>
                     <input type="text" maxlength="500" class="form-control" id="description" name="description"
                            aria-describedby="descriptionHelp" value="<?= $this->data['project']->description ?>" required>
                     <small id="descriptionHelp" class="form-text text-muted"><?= lang(
-                            'project.form.description.help'
+                            'admin.project.form.description.help'
                         ) ?></small>
                 </div>
 

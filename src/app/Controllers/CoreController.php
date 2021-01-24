@@ -22,32 +22,39 @@ abstract class CoreController extends Controller
     public const SESSION_LOGGED_IN = 'isLoggedIn';
     public const SESSION_USER_SID = 'userSId';
 
+    protected $helpers = ['form'];
+
     /**
      * @var User|null
      */
-    protected $user;
+    protected ?User $user = null;
 
     /**
      * @var array $global
      */
-    protected $global = [];
+    protected array $global = [];
 
     /**
      * @var Session $session
      */
-    protected $session;
+    protected Session $session;
 
-    public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
-    {
+    public function initController(
+        RequestInterface $request,
+        ResponseInterface $response,
+        LoggerInterface $logger
+    ): void {
         parent::initController($request, $response, $logger);
         $this->session = Services::session();
 
         if ($this->isLoggedIn()) {
             $this->global['user'] = $this->user;
-            $this->global['fullName'] = $this->user->firstName . ' ' . $this->user->surname;
+            $this->global['fullName'] = $this->user->getFullName();
         }
 
-        $this->global['successForm'] = $this->session->getFlashdata('successForm');
+        $this->global['successForm'] = $this->session->getFlashdata(
+            'successForm'
+        );
         $this->global['errorForm'] = $this->session->getFlashdata('errorForm');
     }
 
@@ -62,19 +69,32 @@ abstract class CoreController extends Controller
         $userSId = $this->session->get(self::SESSION_USER_SID);
 
         if (isset($isLoggedIn, $userSId) && $isLoggedIn && !empty($userSId)) {
-            if (!$this->user instanceof User || ($this->user instanceof User && $this->user->sId !== $userSId)) {
+            if (!$this->user instanceof User
+                || ($this->user instanceof User
+                    && $this->user->sId !== $userSId)
+            ) {
                 $userModel = new User();
-                $userModel = $userModel->where('sId', $this->session->get(self::SESSION_USER_SID));
+                $userModel = $userModel->where(
+                    'sId',
+                    $this->session->get(
+                        self::SESSION_USER_SID
+                    )
+                );
 
                 if ($userModel->countAllResults(false) !== 1) {
                     $this->session->destroy();
-                    $this->session->setFlashdata('errorForm', ['Du wurdest automatisch ausgeloggt.']);
+                    $this->session->setFlashdata(
+                        'errorForm',
+                        ['Du wurdest automatisch ausgeloggt.']
+                    );
+
                     return false;
                 }
 
                 $this->user = $userModel->first();
                 $this->user->loadRights();
             }
+
             return true;
         }
 
@@ -94,9 +114,11 @@ abstract class CoreController extends Controller
     /**
      * This method will check if the incoming Request is valid.
      *
-     * @param string|null $modelId
+     * @param  string|null  $modelId
      *
      * @return RedirectResponse|null
      */
-    abstract protected function isRequestValid(?string $modelId = null): ?RedirectResponse;
+    abstract protected function isRequestValid(
+        ?string $modelId = null
+    ): ?RedirectResponse;
 }

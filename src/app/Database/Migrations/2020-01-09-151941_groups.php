@@ -10,7 +10,8 @@ use CodeIgniter\Database\Migration;
  */
 class Groups extends Migration
 {
-    public function up()
+    /** @inheritDoc */
+    public function up(): void
     {
         $this->forge->addField(
             [
@@ -34,7 +35,8 @@ class Groups extends Migration
         $this->forge->createTable('group');
     }
 
-    public function down()
+    /** @inheritDoc */
+    public function down(): void
     {
         $this->forge->dropTable('group');
     }

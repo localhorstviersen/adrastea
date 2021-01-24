@@ -43,7 +43,7 @@
 # app.CSRFRegenerate  = true
 # app.CSRFExcludeURIs = []
 
-# app.site.title = 'Adreastea'
+# app.site.title = 'Adrastea'
 
 # app.CSPEnabled = false
 

@@ -1,26 +1,42 @@
 <?php
 return [
-    'project.title' => 'Projekt Übersicht',
-    'project.title.create' => 'Projekt erstellen',
-    'project.title.edit' => 'Projekt "{name}" bearbeiten',
-    'project.title.delete' => 'Projekt "{name}" löschen',
-    'project.title.managePermissions' => 'Berechtigungen des Projektes "{name}" bearbeiten',
-    'project.table.name' => 'Name',
-    'project.table.description' => 'Beschreibung',
-    'project.table.createdAt' => 'Erstellt am',
-    'project.notFound' => 'Projekt wurde nicht gefunden.',
-    'project.form.name' => 'Name',
-    'project.form.name.help' => 'Name des Projektes (max 50 Zeichen)',
-    'project.form.name.validation.required' => 'Du musst einen Namen angeben!',
-    'project.form.name.validation.alpha_numeric_space' => 'Du musst einen Namen angeben!',
-    'project.form.name.validation.max_length' => 'Der Name darf maximal 50 Zeichen lang sein!',
-    'project.form.description' => 'Beschreibung',
-    'project.form.description.help' => 'Beschreibung des Projektes (max 500 Zeichen)',
-    'project.form.description.validation.required' => 'Du musst eine Beschreibung angeben!',
-    'project.form.description.validation.alpha_numeric_space' => 'Du musst eine Beschreibung angeben!',
-    'project.form.description.validation.max_length' => 'Die Beschreibung darf maximal 500 Zeichen lang sein!',
-    'project.form.create.success' => 'Das Projekt wurde erfolgreich erstellt.',
-    'project.form.edit.success' => 'Das Projekt wurde erfolgreich bearbeitet.',
-    'project.form.delete.success' => 'Das Projekt wurde erfolgreich gelöscht.',
-    'project.form.managePermissions.success' => 'Die Rechte wurden erfolgreich zugewiesen'
+    'project' => [
+        'title' => [
+            'title' => 'Projekt Übersicht',
+            'create' => 'Projekt erstellen',
+            'edit' => 'Projekt "{name}" bearbeiten',
+            'delete' => 'Projekt "{name}" löschen',
+            'managePermissions' => 'Berechtigungen des Projektes "{name}" bearbeiten',
+        ],
+        'table' => [
+            'name' => 'Name',
+            'description' => 'Beschreibung',
+            'createdAt' => 'Erstellt am',
+        ],
+        'notFound' => 'Projekt wurde nicht gefunden.',
+        'form' => [
+            'name' => [
+                'name' => 'Name',
+                'help' => 'Name des Projektes (max 50 Zeichen)',
+                'validation' => [
+                    'required' => 'Du musst einen Namen angeben!',
+                    'alpha_numeric_space' => 'Es sind nur Alpha-numerische Zeichen im Namen erlaubt!',
+                    'max_length' => 'Der Name darf maximal 50 Zeichen lang sein!',
+                ]
+            ],
+            'description' => [
+                'name' => 'Beschreibung',
+                'help' => 'Beschreibung des Projektes (max 500 Zeichen)',
+                'validation' => [
+                    'required' => 'Du musst eine Beschreibung angeben!',
+                    'alpha_numeric_space' => 'Es sind nur Alpha-numerische Zeichen in der Beschreibung erlaubt!',
+                    'max_length' => 'Die Beschreibung darf maximal 500 Zeichen lang sein!',
+                ]
+            ],
+            'createSuccess' => 'Das Projekt wurde erfolgreich erstellt.',
+            'editSuccess' => 'Das Projekt wurde erfolgreich bearbeitet.',
+            'deleteSuccess' => 'Das Projekt wurde erfolgreich gelöscht.',
+            'managePermissionsSuccess' => 'Die Rechte wurden erfolgreich zugewiesen'
+        ],
+    ]
 ];
