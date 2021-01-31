@@ -5,6 +5,7 @@ return [
         'title' => 'Deine Projekte',
         'start' => 'Projekt - {name} - Start',
         'backlog' => 'Projekt - {name} - Backlog',
+        'kanban' => 'Projekt - {name} - Kanban Board',
         'admin' => [
             'general' => [
                 'title' => 'Projekt - {name} - Administration - Allgemeine Einstellungen',
@@ -32,6 +33,9 @@ return [
         ]
     ],
     'table' => [
+        'ticketStatus' => [
+            'priority' => 'Priorität'
+        ],
         'ticketFields' => [
             'type' => 'Typ',
             'name' => 'Name',
@@ -91,6 +95,14 @@ return [
                     'required' => 'Du musst einen Namen angeben!',
                     'alpha_numeric_space' => 'Du musst einen Namen angeben!',
                     'max_length' => 'Der Name darf maximal 50 Zeichen lang sein!'
+                ]
+            ],
+            'priority' => [
+                'name' => 'Priorität',
+                'help' => 'Anhand dieser Zahl wird entschieden, an welcher Stelle dieser Status im Kanban Board dargestellt wird.',
+                'validation' => [
+                    'required' => 'Du musst eine Priorität angeben!',
+                    'numeric' => 'Du musst eine Priorität angeben!'
                 ]
             ],
             'create' => [

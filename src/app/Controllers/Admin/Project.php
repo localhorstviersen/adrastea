@@ -85,7 +85,7 @@ class Project extends CoreController
             $validation = Services::validation();
             $validation->setRuleGroup('projectRules');
 
-            if (!$validation->withRequest($this->request)->run()) {
+            if ( ! $validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
                 return redirect()->to(base_url('admin/project/create'));
@@ -107,7 +107,11 @@ class Project extends CoreController
             }
 
             foreach (Status::$defaultStatus as $defaultStatus) {
-                $ticketStatusModel->insert(['name' => $defaultStatus, 'projectId' => $projectId]);
+                $ticketStatusModel->insert([
+                    'name' => $defaultStatus['name'],
+                    'priority' => $defaultStatus['priority'],
+                    'projectId' => $projectId
+                ]);
             }
 
             foreach (Field::$systemFields as $field) {
@@ -138,7 +142,7 @@ class Project extends CoreController
             $validation = Services::validation();
             $validation->setRuleGroup('projectRules');
 
-            if (!$validation->withRequest($this->request)->run()) {
+            if ( ! $validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
                 return redirect()->to(base_url('admin/project/edit/' . $projectId));
@@ -270,11 +274,11 @@ class Project extends CoreController
      */
     protected function isRequestValid(?string $modelId = null): ?RedirectResponse
     {
-        if (!$this->isLoggedIn()) {
+        if ( ! $this->isLoggedIn()) {
             return redirect()->to(base_url('login'));
         }
 
-        if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_PROJECT_MANAGE)) {
+        if ( ! $this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_PROJECT_MANAGE)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
             return redirect()->to(base_url(''));
         }
@@ -283,7 +287,7 @@ class Project extends CoreController
             $projectModel = new \App\Models\Project;
             $this->global['project'] = $projectModel->find($modelId);
 
-            if (!$this->global['project'] instanceof \App\Models\Project) {
+            if ( ! $this->global['project'] instanceof \App\Models\Project) {
                 $this->session->setFlashdata('errorForm', lang('admin.project.notFound'));
                 return redirect()->to(base_url('admin/project'));
             }
@@ -293,8 +297,8 @@ class Project extends CoreController
     }
 
     /**
-     * @param array  $projectRoleRights
-     * @param int    $roleId
+     * @param array $projectRoleRights
+     * @param int $roleId
      * @param string $right
      *
      * @return bool

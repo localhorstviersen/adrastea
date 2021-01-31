@@ -13,7 +13,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - 'database_volume:/var/lib/mysql'
+      - './storage/db:/var/lib/mysql'
     networks:
       - adrastea
   portainer:

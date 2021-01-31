@@ -60,7 +60,7 @@ class Project extends Model
      */
     public function getTicketStatus(): array
     {
-        return (new Status())->where('projectId', $this->id)->findAll();
+        return (new Status())->where('projectId', $this->id)->orderBy('priority')->findAll();
     }
 
     /**

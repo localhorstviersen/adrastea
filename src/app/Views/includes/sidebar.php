@@ -32,6 +32,7 @@
                 <div class="bg-white py-2 collapse-inner rounded">
                     <a class="collapse-item" href="<?= base_url('project/' . $project->id . '/start') ?>">Start</a>
                     <a class="collapse-item" href="<?= base_url('project/' . $project->id . '/backlog') ?>">Backlog</a>
+                    <a class="collapse-item" href="<?= base_url('project/' . $project->id . '/kanban') ?>">Kanban</a>
 
                     <?php if ($this->data['user']->hasProjectRight($project, \App\Models\ProjectRoleRights::RIGHT_PROJECT_ADMIN)): ?>
                         <a class="collapse-item" href="<?= base_url('project/' . $project->id . '/admin/general') ?>">Admin</a>

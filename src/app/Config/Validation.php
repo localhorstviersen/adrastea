@@ -133,6 +133,14 @@ class Validation
                 'alpha_numeric_space' => 'project.form.ticketStatus.name.validation.alpha_numeric_space',
                 'max_length' => 'project.form.ticketStatus.name.validation.max_length',
             ]
+        ],
+        'priority' => [
+            'label' => 'project.form.ticketStatus.priority.name',
+            'rules' => 'required|numeric',
+            'errors' => [
+                'required' => 'project.form.ticketStatus.priority.validation.required',
+                'numeric' => 'project.form.ticketStatus.priority.validation.numeric'
+            ]
         ]
     ];
 

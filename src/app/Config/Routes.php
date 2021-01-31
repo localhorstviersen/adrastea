@@ -93,6 +93,8 @@ $routes->group(
         $routes->add('(:num)/backlog/create', 'Project\Backlog::createTicket/$1');
         $routes->add('(:num)/backlog/edit/(:num)', 'Project\Backlog::editTicket/$1/$2');
 
+        $routes->add('(:num)/kanban', 'Project\Kanban::index/$1');
+
         $routes->add('(:num)/admin/general', 'Project\Admin\General::index/$1');
 
         $routes->add('(:num)/admin/ticketType', 'Project\Admin\TicketType::index/$1');

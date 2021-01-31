@@ -250,7 +250,7 @@ class Backlog extends CoreController
                     lang('project.notFound')
                 );
 
-                return redirect()->to(base_url('project'));
+                return redirect()->to(base_url('/'));
             }
 
             if (!$this->user->hasProjectRight(
@@ -263,7 +263,7 @@ class Backlog extends CoreController
                     lang('project.noMemberOfProject')
                 );
 
-                return redirect()->to(base_url('project'));
+                return redirect()->to(base_url('/'));
             }
         }
 

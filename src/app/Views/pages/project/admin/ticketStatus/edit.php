@@ -18,6 +18,13 @@
             <small id="nameHelp" class="form-text text-muted"><?= lang('project.form.ticketStatus.name.help') ?></small>
         </div>
 
+        <div class="form-group">
+            <label for="priority"><?= lang('project.form.ticketStatus.priority.name') ?></label>
+            <input type="number" maxlength="50" class="form-control" id="priority" name="priority" aria-describedby="priorityHelp"
+                   value="<?= $this->data['ticketStatus']->priority ?>" required>
+            <small id="priorityHelp" class="form-text text-muted"><?= lang('project.form.ticketStatus.priority.help') ?></small>
+        </div>
+
         <br>
         <input type="submit" name="submit" class="btn btn-primary" value="<?= lang('general.save') ?>">
     </form>

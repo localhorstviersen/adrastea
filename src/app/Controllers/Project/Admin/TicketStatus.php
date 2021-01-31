@@ -51,7 +51,8 @@ class TicketStatus extends AdminCoreController
             $ticketStatusModel = new Status();
             $data = [
                 'projectId' => $this->project->id,
-                'name' => $this->request->getPost('name')
+                'name' => $this->request->getPost('name'),
+                'priority' => $this->request->getPost('priority')
             ];
             $ticketStatusModel->insert($data);
 
@@ -87,7 +88,8 @@ class TicketStatus extends AdminCoreController
 
             $ticketStatusModel = new Status();
             $data = [
-                'name' => $this->request->getPost('name')
+                'name' => $this->request->getPost('name'),
+                'priority' => $this->request->getPost('priority')
             ];
             $ticketStatusModel->update($ticketStatusId, $data);
 
@@ -152,6 +154,7 @@ class TicketStatus extends AdminCoreController
         $table->setHeading(
             [
                 lang('project.table.name'),
+                lang('project.table.ticketStatus.priority'),
                 ''
             ]
         );
@@ -184,6 +187,7 @@ class TicketStatus extends AdminCoreController
             $table->addRow(
                 [
                     $state->name,
+                    $state->priority,
                     sprintf('%s %s', $editUrl, $deleteUrl)
                 ]
             );
