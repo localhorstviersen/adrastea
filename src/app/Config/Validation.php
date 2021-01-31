@@ -116,6 +116,13 @@ class Validation
                 'alpha_numeric_space' => 'project.form.ticketFields.description.validation.alpha_numeric_space',
                 'max_length' => 'project.form.ticketFields.description.validation.max_length'
             ]
+        ],
+        'required' => [
+            'label' => 'project.form.ticketFields.required.name',
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'project.form.ticketFields.required.validation.required'
+            ]
         ]
     ];
 

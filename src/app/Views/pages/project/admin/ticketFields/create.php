@@ -38,9 +38,16 @@
             <label for="description"><?= lang('project.form.ticketFields.description.name') ?></label>
             <input type="text" maxlength="50" class="form-control" id="description" name="description"
                    aria-describedby="descriptionHelp" required>
-            <small id="descriptionHelp" class="form-text text-muted"><?= lang(
-                    'project.form.ticketFields.description.help'
-                ) ?></small>
+            <small id="descriptionHelp" class="form-text text-muted"><?= lang('project.form.ticketFields.description.help') ?></small>
+        </div>
+
+        <div class="form-group">
+            <label for="required"><?= lang('project.form.ticketFields.required.name') ?></label>
+            <select class="form-control" id="required" name="required" aria-describedby="requiredHelp" required>
+                <option value="0"><?= lang('general.no') ?></option>
+                <option value="1"><?= lang('general.yes') ?></option>
+            </select>
+            <small id="requiredHelp" class="form-text text-muted"><?= lang('project.form.ticketFields.required.help') ?></small>
         </div>
 
         <br>

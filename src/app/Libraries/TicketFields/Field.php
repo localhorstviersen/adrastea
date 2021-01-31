@@ -20,7 +20,7 @@ abstract class Field implements FieldInterface
     protected string $helpText;
     private bool $required = false;
     private bool $disabled = false;
-    private string $value;
+    private ?string $value;
 
     private array $rules = [];
 
@@ -40,13 +40,13 @@ abstract class Field implements FieldInterface
     }
 
     /** @inheritDoc */
-    public function getValue(): string
+    public function getValue(): ?string
     {
         return $this->value;
     }
 
     /** @inheritDoc */
-    public function setValue(string $value): void
+    public function setValue(?string $value): void
     {
         $this->value = $value;
     }
@@ -57,12 +57,12 @@ abstract class Field implements FieldInterface
         $this->required = $required;
 
         if ($required) {
-            if (!in_array('required', $this->rules, true)) {
+            if ( ! in_array('required', $this->rules, true)) {
                 $this->addRule('required');
             }
         } else {
             $key = array_search('required', $this->rules, true);
-            if (!empty($key)) {
+            if ( ! empty($key)) {
                 unset($this->rules[$key]);
             }
         }
@@ -119,6 +119,10 @@ abstract class Field implements FieldInterface
             return [];
         }
 
+        if ( ! $this->required && empty($this->value)) {
+            return [];
+        }
+
         return [
             $this->identification => [
                 'label' => $this->nameText,
@@ -153,7 +157,7 @@ abstract class Field implements FieldInterface
         $options = [
             'id' => $this->identification,
             'class' => 'form-control',
-            'aria-describedby' => $this->identification . 'Help'
+            'aria-describedby' => $this->identification.'Help'
         ];
 
         if ($this->required) {

@@ -323,6 +323,7 @@ class Backlog extends CoreController
                 lang('project.backlog.table.id'),
                 lang('project.backlog.table.title'),
                 lang('project.backlog.table.assigned'),
+                lang('project.backlog.table.reporter'),
                 ''
             ]
         );
@@ -358,6 +359,7 @@ class Backlog extends CoreController
                         $ticket->getFieldValue('title')
                     ),
                     User::getFullNameBySId($ticket->getFieldValue('assign')),
+                    User::getFullNameBySId($ticket->getFieldValue('reporter')),
                     sprintf('%s', $editUrl)
                 ]
             );

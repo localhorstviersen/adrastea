@@ -66,7 +66,8 @@ class TicketFields extends AdminCoreController
                 'identification' => $this->request->getPost('identification'),
                 'name' => $this->request->getPost('name'),
                 'description' => $this->request->getPost('description'),
-                'type' => $this->request->getPost('type')
+                'type' => $this->request->getPost('type'),
+                'required' => $this->request->getPost('required')
             ];
             $model->insert($data);
 
@@ -129,7 +130,8 @@ class TicketFields extends AdminCoreController
                 'identification' => $this->request->getPost('identification'),
                 'name' => $this->request->getPost('name'),
                 'description' => $this->request->getPost('description'),
-                'type' => $this->request->getPost('type')
+                'type' => $this->request->getPost('type'),
+                'required' => $this->request->getPost('required')
             ];
             $model->update($fieldId, $data);
 
@@ -182,6 +184,7 @@ class TicketFields extends AdminCoreController
                 lang('project.table.ticketFields.name'),
                 lang('project.table.ticketFields.type'),
                 lang('project.table.ticketFields.systemField'),
+                lang('project.table.ticketFields.required'),
                 ''
             ]
         );
@@ -220,6 +223,11 @@ class TicketFields extends AdminCoreController
                     $field->name,
                     Field::getTypes()[$field->type],
                     $field->isSystemField()
+                        ? lang('general.yes')
+                        : lang(
+                        'general.no'
+                    ),
+                    $field->isRequired()
                         ? lang('general.yes')
                         : lang(
                         'general.no'

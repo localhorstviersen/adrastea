@@ -13,28 +13,28 @@ use CodeIgniter\Model;
  * @package App\Models\Project\Ticket
  * @author  Lars Riße <me@elyday.net>
  *
- * @property int    $id
- * @property int    $projectId
+ * @property int $id
+ * @property int $projectId
  * @property string $type
  * @property string $identification
  * @property string $name
  * @property string $description
- * @property bool   $systemField
- * @property bool   $required
+ * @property bool $systemField
+ * @property bool $required
  */
 class Field extends Model
 {
     protected $table = 'project_ticket_fields';
     protected $returnType = self::class;
-    protected $allowedFields
-        = [
-            'projectId',
-            'type',
-            'identification',
-            'name',
-            'description',
-            'systemField'
-        ];
+    protected $allowedFields = [
+        'projectId',
+        'type',
+        'identification',
+        'name',
+        'description',
+        'systemField',
+        'required'
+    ];
     protected $useTimestamps = true;
 
     public const TYPE_TEXT = 'text';
@@ -45,44 +45,49 @@ class Field extends Model
     public const TYPE_TEXTAREA = 'textarea';
 
     /** @var array */
-    public static array $systemFields
-        = [
-            [
-                'identification' => 'title',
-                'name' => 'Titel',
-                'type' => self::TYPE_TEXT,
-                'description' => 'Titel des Tickets'
-            ],
-            [
-                'identification' => 'assign',
-                'name' => 'Zugewiesener Benutzer',
-                'type' => self::TYPE_USER,
-                'description' => 'Zugewiesener Benutzer'
-            ],
-            [
-                'identification' => 'type',
-                'name' => 'Ticket-Typ',
-                'type' => self::TYPE_TYPE,
-                'description' => 'Ticket-Typ'
-            ],
-            [
-                'identification' => 'status',
-                'name' => 'Ticket-Status',
-                'type' => self::TYPE_STATUS,
-                'description' => 'Status des Tickets'
-            ],
-            [
-                'identification' => 'description',
-                'name' => 'Beschreibung',
-                'type' => self::TYPE_TEXTAREA,
-                'description' => 'Die Beschreibung des Tickets'
-            ]
-        ];
+    public static array $systemFields = [
+        [
+            'identification' => 'title',
+            'name' => 'Titel',
+            'type' => self::TYPE_TEXT,
+            'description' => 'Titel des Tickets'
+        ],
+        [
+            'identification' => 'assign',
+            'name' => 'Zugewiesener Benutzer',
+            'type' => self::TYPE_USER,
+            'description' => 'Zugewiesener Benutzer'
+        ],
+        [
+            'identification' => 'reporter',
+            'name' => 'Melder',
+            'type' => self::TYPE_USER,
+            'description' => 'Wer hat das Ticket gemeldet?'
+        ],
+        [
+            'identification' => 'type',
+            'name' => 'Ticket-Typ',
+            'type' => self::TYPE_TYPE,
+            'description' => 'Ticket-Typ'
+        ],
+        [
+            'identification' => 'status',
+            'name' => 'Ticket-Status',
+            'type' => self::TYPE_STATUS,
+            'description' => 'Status des Tickets'
+        ],
+        [
+            'identification' => 'description',
+            'name' => 'Beschreibung',
+            'type' => self::TYPE_TEXTAREA,
+            'description' => 'Die Beschreibung des Tickets'
+        ]
+    ];
 
     /**
      * This method will find a field by its identification name and the project id.
      *
-     * @param  int     $projectId
+     * @param  int  $projectId
      * @param  string  $identification
      *
      * @return Field|null
@@ -97,7 +102,7 @@ class Field extends Model
             $identification
         )->find();
 
-        return !empty($field) && $field[0] instanceof self ? $field[0] : null;
+        return ! empty($field) && $field[0] instanceof self ? $field[0] : null;
     }
 
     /**
@@ -129,6 +134,16 @@ class Field extends Model
     }
 
     /**
+     * This method will return true if the ticket field is required.
+     *
+     * @return bool
+     */
+    public function isRequired(): bool
+    {
+        return $this->required === '1';
+    }
+
+    /**
      * @return Project
      */
     public function getProject(): Project
@@ -150,7 +165,7 @@ class Field extends Model
             ->where('fieldId', $this->id)
             ->first();
 
-        if (!$valueModel instanceof Project\Ticket\Field\Value) {
+        if ( ! $valueModel instanceof Project\Ticket\Field\Value) {
             return null;
         }
 
@@ -158,7 +173,7 @@ class Field extends Model
     }
 
     /**
-     * @param  int     $ticketId
+     * @param  int  $ticketId
      * @param  string  $value
      *
      * @throws \ReflectionException

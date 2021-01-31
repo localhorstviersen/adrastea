@@ -38,7 +38,7 @@
                     {
                         id: "item-<?= $ticket->id ?>",
                         title: "<?= $ticket->getFieldValue('title') ?>"
-                    }
+                    },
                     <?php endforeach; ?>
                 ]
             },

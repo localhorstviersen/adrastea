@@ -24,14 +24,14 @@ interface FieldInterface
     public function getValidationRules(): array;
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getValue(): string;
+    public function getValue(): ?string;
 
     /**
-     * @param  string  $value
+     * @param  string|null  $value
      */
-    public function setValue(string $value): void;
+    public function setValue(?string $value): void;
 
     /**
      * @param  bool  $required

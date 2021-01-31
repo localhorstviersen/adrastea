@@ -35,7 +35,7 @@ class Status extends Model
         ],
         [
             'name' => 'Geschlossen',
-            'priority' => 3
+            'priority' => 1000
         ]
     ];
 

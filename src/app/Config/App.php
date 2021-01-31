@@ -244,6 +244,7 @@ class App extends BaseConfig
 	*/
 	public $CSRFTokenName  = 'csrf_test_name';
 	public $CSRFCookieName = 'csrf_cookie_name';
+    public $CSRFHeaderName = 'X-CSRF-TOKEN';
 	public $CSRFExpire     = 7200;
 	public $CSRFRegenerate = true;
 	public $CSRFRedirect   = true;

@@ -74,7 +74,7 @@ $routes->setAutoRoute(false);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 // --- Controllers/Home::class
-$routes->get('/', 'home'); // TODO use redirect when it is not buggy
+$routes->get('/', 'Home::index'); // TODO use redirect when it is not buggy
 $routes->get('home', 'Home::index');
 
 // --- Controllers/Login::class

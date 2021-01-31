@@ -30,6 +30,7 @@ return [
             'id' => '#',
             'title' => 'Titel',
             'assigned' => 'Zugewiesen',
+            'reporter' => 'Melder'
         ]
     ],
     'table' => [
@@ -39,7 +40,8 @@ return [
         'ticketFields' => [
             'type' => 'Typ',
             'name' => 'Name',
-            'systemField' => 'System'
+            'systemField' => 'System',
+            'required' => 'Pflichtfeld',
         ],
         'name' => 'Name',
         'description' => 'Beschreibung',
@@ -150,6 +152,13 @@ return [
                     'required' => 'Du musst eine Beschreibung angeben!',
                     'alpha_numeric_space' => 'Du musst eine Beschreibung angeben!',
                     'max_length' => 'Die Beschreibung darf maximal 250 Zeichen lang sein!'
+                ]
+            ],
+            'required' => [
+                'name' => 'Pflichtfeld',
+                'help' => 'Ist dieses Feld ein Pflichtfeld?',
+                'validation' => [
+                    'required' => 'Du musst etwas angeben!'
                 ]
             ],
             'create' => [
