@@ -8,25 +8,25 @@
             <ul class="nav nav-tabs" id="myTab" role="tablist">
                 <li class="nav-item">
                     <a class="nav-link <?php if ($this->data['projectAdminPage'] === 'general'): ?>active<?php endif; ?>"
-                       href="<?= base_url('project/' . $this->data['project']->id . '/admin/general') ?>">
+                       href="<?= site_url('project/' . $this->data['project']->id . '/admin/general') ?>">
                         <?= lang('project.title.admin.general.short') ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php if ($this->data['projectAdminPage'] === 'ticketType'): ?>active<?php endif; ?>"
-                       href="<?= base_url('project/' . $this->data['project']->id . '/admin/ticketType') ?>">
+                       href="<?= site_url('project/' . $this->data['project']->id . '/admin/ticketType') ?>">
                         <?= lang('project.title.admin.ticketTypes.short') ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php if ($this->data['projectAdminPage'] === 'ticketStatus'): ?>active<?php endif; ?>"
-                       href="<?= base_url('project/' . $this->data['project']->id . '/admin/ticketStatus') ?>">
+                       href="<?= site_url('project/' . $this->data['project']->id . '/admin/ticketStatus') ?>">
                         <?= lang('project.title.admin.ticketStatus.short') ?>
                     </a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link <?php if ($this->data['projectAdminPage'] === 'ticketFields'): ?>active<?php endif; ?>"
-                       href="<?= base_url('project/' . $this->data['project']->id . '/admin/ticketFields') ?>">
+                       href="<?= site_url('project/' . $this->data['project']->id . '/admin/ticketFields') ?>">
                         <?= lang('project.title.admin.ticketFields.short') ?>
                     </a>
                 </li>

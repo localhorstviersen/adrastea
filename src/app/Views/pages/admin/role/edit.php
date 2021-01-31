@@ -8,7 +8,7 @@
             <h6 class="m-0 font-weight-bold text-primary"><?= lang('general.edit') ?></h6>
         </div>
         <div class="card-body">
-            <form method="post" action="<?= base_url('admin/role/edit/' . $this->data['role']->id) ?>">
+            <form method="post" action="<?= site_url('admin/role/edit/' . $this->data['role']->id) ?>">
                 <div class="form-group">
                     <label for="name"><?= lang('role.form.name.name') ?></label>
                     <input type="text" class="form-control" id="name" name="name" aria-describedby="nameHelp"
@@ -32,7 +32,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('titleButtons') ?>
-    <a href="<?= base_url('admin/role') ?>"
+    <a href="<?= site_url('admin/role') ?>"
        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50"></i> <?= lang('general.back') ?>
     </a>

@@ -54,6 +54,7 @@ class FieldFactory
             $newField = new UserField($field);
 
             $users = [];
+            $users[null] = 'Kein Benutzer';
             $userModel = new User();
 
             /** @var User $user */
@@ -62,6 +63,7 @@ class FieldFactory
             }
 
             $newField->setOptions($users);
+            $newField->addRule(sprintf('in_list[%s]', implode(',', array_keys($users))));
         }
 
         if ($field->type === Field::TYPE_TEXTAREA) {

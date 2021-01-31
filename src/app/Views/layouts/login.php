@@ -12,7 +12,7 @@
     <link href="/assets/css/signin.css" rel="stylesheet">
 </head>
 <body class="text-center">
-<form class="form-signin" method="post" action="<?= base_url('login') ?>">
+<form class="form-signin" method="post" action="<?= site_url('login') ?>">
     <img class="mb-4" src="/assets/images/logo.svg" alt="" width="153" height="72">
     <h1 class="h3 mb-3 font-weight-normal">Bitte logge dich ein</h1>
     <?php if (!empty($this->data['errorForm'])): ?>

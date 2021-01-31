@@ -46,7 +46,7 @@ class TicketFields extends AdminCoreController
             if (!$validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
-                return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketFields/create'));
+                return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketFields/create'));
             }
 
             $foundField =
@@ -57,7 +57,7 @@ class TicketFields extends AdminCoreController
                     'errorForm',
                     lang('project.form.ticketFields.identification.validation.existsAlready')
                 );
-                return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketFields/create'));
+                return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketFields/create'));
             }
 
             $model = new Field();
@@ -66,12 +66,13 @@ class TicketFields extends AdminCoreController
                 'identification' => $this->request->getPost('identification'),
                 'name' => $this->request->getPost('name'),
                 'description' => $this->request->getPost('description'),
-                'type' => $this->request->getPost('type')
+                'type' => $this->request->getPost('type'),
+                'required' => $this->request->getPost('required')
             ];
             $model->insert($data);
 
             $this->session->setFlashdata('successForm', lang('project.form.ticketFields.create.success'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketFields'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketFields'));
         }
 
         $this->global['title'] = lang('project.title.admin.ticketFields.title', ['name' => $this->project->name]);
@@ -99,14 +100,14 @@ class TicketFields extends AdminCoreController
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
                 return redirect()->to(
-                    base_url('project/' . $this->project->id . '/admin/ticketFields/edit/' . $fieldId)
+                    site_url('project/' . $this->project->id . '/admin/ticketFields/edit/' . $fieldId)
                 );
             }
 
             if (!array_key_exists($this->request->getPost('type'), Field::getTypes())) {
                 $this->session->setFlashdata('errorForm', lang('project.form.ticketFields.type.validation.in_list'));
                 return redirect()->to(
-                    base_url('project/' . $this->project->id . '/admin/ticketFields/edit/' . $fieldId)
+                    site_url('project/' . $this->project->id . '/admin/ticketFields/edit/' . $fieldId)
                 );
             }
 
@@ -120,7 +121,7 @@ class TicketFields extends AdminCoreController
                     lang('project.form.ticketFields.identification.validation.existsAlready')
                 );
                 return redirect()->to(
-                    base_url('project/' . $this->project->id . '/admin/ticketFields/edit/' . $fieldId)
+                    site_url('project/' . $this->project->id . '/admin/ticketFields/edit/' . $fieldId)
                 );
             }
 
@@ -129,12 +130,13 @@ class TicketFields extends AdminCoreController
                 'identification' => $this->request->getPost('identification'),
                 'name' => $this->request->getPost('name'),
                 'description' => $this->request->getPost('description'),
-                'type' => $this->request->getPost('type')
+                'type' => $this->request->getPost('type'),
+                'required' => $this->request->getPost('required')
             ];
             $model->update($fieldId, $data);
 
             $this->session->setFlashdata('successForm', lang('project.form.ticketFields.edit.success'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketFields'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketFields'));
         }
 
         return view('pages/project/admin/ticketFields/edit', $this->global);
@@ -150,7 +152,7 @@ class TicketFields extends AdminCoreController
 
         if ($this->global['field']->isSystemField()) {
             $this->session->setFlashdata('errorForm', lang('project.form.ticketFields.delete.systemField'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketFields'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketFields'));
         }
 
         if ($this->isPost()) {
@@ -158,7 +160,7 @@ class TicketFields extends AdminCoreController
             $model->delete($fieldId);
 
             $this->session->setFlashdata('successForm', lang('project.form.ticketFields.delete.success'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketFields'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketFields'));
         }
 
         $this->global['title'] = lang('project.title.admin.ticketFields.title', ['name' => $this->project->name]);
@@ -182,6 +184,7 @@ class TicketFields extends AdminCoreController
                 lang('project.table.ticketFields.name'),
                 lang('project.table.ticketFields.type'),
                 lang('project.table.ticketFields.systemField'),
+                lang('project.table.ticketFields.required'),
                 ''
             ]
         );
@@ -191,7 +194,7 @@ class TicketFields extends AdminCoreController
         foreach ($fields as $field) {
             $editUrl = sprintf(
                 '<a href="%s"><i class="fas fa-pencil-alt"></i></a>',
-                base_url(
+                site_url(
                     sprintf(
                         'project/%d/admin/ticketFields/edit/%d',
                         $this->project->id,
@@ -205,7 +208,7 @@ class TicketFields extends AdminCoreController
             if (!$field->isSystemField()) {
                 $deleteUrl = sprintf(
                     '<a href="%s"><i class="fas fa-trash-alt"></i></a>',
-                    base_url(
+                    site_url(
                         sprintf(
                             'project/%d/admin/ticketFields/delete/%d',
                             $this->project->id,
@@ -220,6 +223,11 @@ class TicketFields extends AdminCoreController
                     $field->name,
                     Field::getTypes()[$field->type],
                     $field->isSystemField()
+                        ? lang('general.yes')
+                        : lang(
+                        'general.no'
+                    ),
+                    $field->isRequired()
                         ? lang('general.yes')
                         : lang(
                         'general.no'
@@ -251,7 +259,7 @@ class TicketFields extends AdminCoreController
 
         if (!$this->global['field'] instanceof Field) {
             $this->session->setFlashdata('errorForm', lang('project.ticketFields.notFound'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketFields'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketFields'));
         }
 
         return null;

@@ -65,7 +65,7 @@ class Group extends CoreController
         /** @var \App\Models\Group $group */
         foreach ($groups as $group) {
             $assignUrl =
-                '<a href="' . base_url('admin/group/assign/' . $group->sId) . '"><i class="fas fa-users-cog"></i></a>';
+                '<a href="' . site_url('admin/group/assign/' . $group->sId) . '"><i class="fas fa-users-cog"></i></a>';
 
             $table->addRow(
                 [
@@ -114,7 +114,7 @@ class Group extends CoreController
             }
 
             $this->session->setFlashdata('successForm', lang('group.assign.success'));
-            return redirect()->to(base_url('admin/group'));
+            return redirect()->to(site_url('admin/group'));
         }
 
         $this->global['roles'] = $rolesModel->findAll();
@@ -138,12 +138,12 @@ class Group extends CoreController
     protected function isRequestValid(?string $modelId = null): ?RedirectResponse
     {
         if (!$this->isLoggedIn()) {
-            return redirect()->to(base_url('login'));
+            return redirect()->to(site_url('login'));
         }
 
         if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_GROUP)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
-            return redirect()->to(base_url(''));
+            return redirect()->to(site_url(''));
         }
 
         if ($modelId !== null) {
@@ -152,7 +152,7 @@ class Group extends CoreController
 
             if (!$this->global['group'] instanceof \App\Models\Group) {
                 $this->session->setFlashdata('errorForm', lang('group.notFound'));
-                return redirect()->to(base_url('admin/group'));
+                return redirect()->to(site_url('admin/group'));
             }
         }
 

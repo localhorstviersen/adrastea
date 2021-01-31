@@ -16,7 +16,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('titleButtons') ?>
-    <a href="<?= base_url('admin/project/create') ?>"
+    <a href="<?= site_url('admin/project/create') ?>"
        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-plus fa-sm text-white-50"></i> <?= lang('general.create') ?>
     </a>

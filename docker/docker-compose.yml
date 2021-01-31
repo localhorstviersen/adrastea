@@ -13,7 +13,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - 'database_volume:/var/lib/mysql'
+      - './storage/db:/var/lib/mysql'
     networks:
       - adrastea
   portainer:
@@ -30,17 +30,23 @@ services:
     restart: unless-stopped
     ports:
       - 8888:8080
+    depends_on:
+      - db
     networks:
       - adrastea
   php:
-    build: ./php-apache
-    image: php-ad
+    image: thecodingmachine/php:7.4-v4-apache-node14
+    environment:
+      PHP_EXTENSIONS: intl zip ldap json mysqli
+      APACHE_DOCUMENT_ROOT: 'public/'
+      PHP_EXTENSION_XDEBUG: 1
+      STARTUP_COMMAND_1: composer install
     ports:
       - 80:80
-    environment:
-      APACHE_DOCUMENT_ROOT: /var/www/html/public
     volumes:
-      - "./../src/:/var/www/html"
+      - './../src/:/var/www/html'
+    depends_on:
+      - db
     networks:
       - adrastea
 

@@ -45,18 +45,19 @@ class TicketStatus extends AdminCoreController
             if (!$validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
-                return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketStatus/create'));
+                return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketStatus/create'));
             }
 
             $ticketStatusModel = new Status();
             $data = [
                 'projectId' => $this->project->id,
-                'name' => $this->request->getPost('name')
+                'name' => $this->request->getPost('name'),
+                'priority' => $this->request->getPost('priority')
             ];
             $ticketStatusModel->insert($data);
 
             $this->session->setFlashdata('successForm', lang('project.form.ticketStatus.create.success'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketStatus'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketStatus'));
         }
 
         $this->global['title'] = lang('project.title.admin.ticketStatus.title', ['name' => $this->project->name]);
@@ -81,18 +82,19 @@ class TicketStatus extends AdminCoreController
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
                 return redirect()->to(
-                    base_url('project/' . $this->project->id . '/admin/ticketStatus/edit/' . $ticketStatusId)
+                    site_url('project/' . $this->project->id . '/admin/ticketStatus/edit/' . $ticketStatusId)
                 );
             }
 
             $ticketStatusModel = new Status();
             $data = [
-                'name' => $this->request->getPost('name')
+                'name' => $this->request->getPost('name'),
+                'priority' => $this->request->getPost('priority')
             ];
             $ticketStatusModel->update($ticketStatusId, $data);
 
             $this->session->setFlashdata('successForm', lang('project.form.ticketStatus.edit.success'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketStatus'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketStatus'));
         }
 
         $this->global['title'] = lang('project.title.admin.ticketStatus.title', ['name' => $this->project->name]);
@@ -114,7 +116,7 @@ class TicketStatus extends AdminCoreController
             $ticketStatusModel->delete($ticketStatusId);
 
             $this->session->setFlashdata('successForm', lang('project.form.ticketStatus.delete.success'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketStatus'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketStatus'));
         }
 
         $this->global['title'] = lang('project.title.admin.ticketStatus.title', ['name' => $this->project->name]);
@@ -136,7 +138,7 @@ class TicketStatus extends AdminCoreController
 
         if (!$this->global['ticketStatus'] instanceof Status) {
             $this->session->setFlashdata('errorForm', lang('project.ticketStatus.notFound'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketStatus'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketStatus'));
         }
 
         return null;
@@ -152,6 +154,7 @@ class TicketStatus extends AdminCoreController
         $table->setHeading(
             [
                 lang('project.table.name'),
+                lang('project.table.ticketStatus.priority'),
                 ''
             ]
         );
@@ -161,7 +164,7 @@ class TicketStatus extends AdminCoreController
         foreach ($status as $state) {
             $editUrl = sprintf(
                 '<a href="%s"><i class="fas fa-pencil-alt"></i></a>',
-                base_url(
+                site_url(
                     sprintf(
                         'project/%d/admin/ticketStatus/edit/%d',
                         $this->project->id,
@@ -172,7 +175,7 @@ class TicketStatus extends AdminCoreController
 
             $deleteUrl = sprintf(
                 '<a href="%s"><i class="fas fa-trash-alt"></i></a>',
-                base_url(
+                site_url(
                     sprintf(
                         'project/%d/admin/ticketStatus/delete/%d',
                         $this->project->id,
@@ -184,6 +187,7 @@ class TicketStatus extends AdminCoreController
             $table->addRow(
                 [
                     $state->name,
+                    $state->priority,
                     sprintf('%s %s', $editUrl, $deleteUrl)
                 ]
             );

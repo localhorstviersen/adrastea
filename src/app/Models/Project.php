@@ -15,7 +15,7 @@ use CodeIgniter\Model;
  *
  * @package App\Models
  *
- * @property int    $id
+ * @property int $id
  * @property string $name
  * @property string $description
  * @property string $created_at
@@ -60,7 +60,7 @@ class Project extends Model
      */
     public function getTicketStatus(): array
     {
-        return (new Status())->where('projectId', $this->id)->findAll();
+        return (new Status())->where('projectId', $this->id)->orderBy('priority')->findAll();
     }
 
     /**
@@ -97,5 +97,16 @@ class Project extends Model
     public function getFields(): array
     {
         return (new Field())->where('projectId', $this->id)->findAll();
+    }
+
+    /**
+     * This method will return the ticket field of this project with the given identification.
+     *
+     * @param  string  $identification
+     * @return array|object|null
+     */
+    public function getField(string $identification)
+    {
+        return (new Field())->where('projectId', $this->id)->where('identification', $identification)->first();
     }
 }

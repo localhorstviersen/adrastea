@@ -8,7 +8,7 @@
             <h6 class="m-0 font-weight-bold text-primary"><?= lang('group.title.assign.titleSub') ?></h6>
         </div>
         <div class="card-body">
-            <form method="post" action="<?= base_url('admin/group/assign/' . $this->data['group']->sId) ?>">
+            <form method="post" action="<?= site_url('admin/group/assign/' . $this->data['group']->sId) ?>">
                 <?php foreach ($this->data['roles'] as $role): ?>
                     <div class="custom-control custom-checkbox">
                         <input type="checkbox" class="custom-control-input" id="role[<?= $role->id ?>]"
@@ -25,7 +25,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('titleButtons') ?>
-    <a href="<?= base_url('admin/group') ?>"
+    <a href="<?= site_url('admin/group') ?>"
        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50"></i> <?= lang('general.back') ?>
     </a>

@@ -1,14 +1,14 @@
 <?= $this->extend('layouts/project/layoutAdmin') ?>
 
 <?= $this->section('projectBodyAdmin') ?>
-    <a href="<?= base_url('project/' . $this->data['project']->id . '/admin/ticketType') ?>"
+    <a href="<?= site_url('project/' . $this->data['project']->id . '/admin/ticketType') ?>"
        class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50"></i> <?= lang('general.back') ?>
     </a>
 
     <br><br>
 
-    <form method="post" action="<?= base_url('project/' . $this->data['project']->id . '/admin/ticketType/create') ?>">
+    <form method="post" action="<?= site_url('project/' . $this->data['project']->id . '/admin/ticketType/create') ?>">
         <div class="form-group">
             <label for="name"><?= lang('project.form.ticketType.name.name') ?></label>
             <input type="text" maxlength="50" class="form-control" id="name" name="name" aria-describedby="nameHelp" required>

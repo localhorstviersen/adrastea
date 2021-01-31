@@ -9,7 +9,7 @@
         </div>
         <div class="card-body">
             <form method="post"
-                  action="<?= base_url('admin/project/managePermissions/' . $this->data['project']->id) ?>">
+                  action="<?= site_url('admin/project/managePermissions/' . $this->data['project']->id) ?>">
                 <div class="table-responsive">
                     <?= $this->data['table'] ?>
                 </div>
@@ -21,7 +21,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('titleButtons') ?>
-    <a href="<?= base_url('admin/project') ?>"
+    <a href="<?= site_url('admin/project') ?>"
        class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50"></i> <?= lang('general.back') ?>
     </a>

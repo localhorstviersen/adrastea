@@ -1,7 +1,7 @@
 <?= $this->extend('layouts/project/layoutAdmin') ?>
 
 <?= $this->section('projectBodyAdmin') ?>
-    <a href="<?= base_url('project/' . $this->data['project']->id . '/admin/ticketFields') ?>"
+    <a href="<?= site_url('project/' . $this->data['project']->id . '/admin/ticketFields') ?>"
        class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50"></i> <?= lang('general.back') ?>
     </a>
@@ -9,7 +9,7 @@
     <br><br>
 
     <form method="post"
-          action="<?= base_url('project/' . $this->data['project']->id . '/admin/ticketFields/create') ?>">
+          action="<?= site_url('project/' . $this->data['project']->id . '/admin/ticketFields/create') ?>">
         <div class="form-group">
             <label for="identification"><?= lang('project.form.ticketFields.identification.name') ?></label>
             <input type="text" maxlength="50" class="form-control" id="identification" name="identification" aria-describedby="identificationHelp"
@@ -38,9 +38,16 @@
             <label for="description"><?= lang('project.form.ticketFields.description.name') ?></label>
             <input type="text" maxlength="50" class="form-control" id="description" name="description"
                    aria-describedby="descriptionHelp" required>
-            <small id="descriptionHelp" class="form-text text-muted"><?= lang(
-                    'project.form.ticketFields.description.help'
-                ) ?></small>
+            <small id="descriptionHelp" class="form-text text-muted"><?= lang('project.form.ticketFields.description.help') ?></small>
+        </div>
+
+        <div class="form-group">
+            <label for="required"><?= lang('project.form.ticketFields.required.name') ?></label>
+            <select class="form-control" id="required" name="required" aria-describedby="requiredHelp" required>
+                <option value="0"><?= lang('general.no') ?></option>
+                <option value="1"><?= lang('general.yes') ?></option>
+            </select>
+            <small id="requiredHelp" class="form-text text-muted"><?= lang('project.form.ticketFields.required.help') ?></small>
         </div>
 
         <br>

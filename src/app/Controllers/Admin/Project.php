@@ -51,11 +51,11 @@ class Project extends CoreController
 
         /** @var \App\Models\Project $project */
         foreach ($projects as $project) {
-            $managePermissionsUrl = '<a href="' . base_url('admin/project/managePermissions/' . $project->id) .
+            $managePermissionsUrl = '<a href="' . site_url('admin/project/managePermissions/' . $project->id) .
                 '"><i class="fa fa-key"></i></a>';
             $editUrl =
-                '<a href="' . base_url('admin/project/edit/' . $project->id) . '"><i class="fa fa-pencil-alt"></i></a>';
-            $deleteUrl = '<a href="' . base_url('admin/project/delete/' . $project->id) .
+                '<a href="' . site_url('admin/project/edit/' . $project->id) . '"><i class="fa fa-pencil-alt"></i></a>';
+            $deleteUrl = '<a href="' . site_url('admin/project/delete/' . $project->id) .
                 '"><i class="fa fa-trash-alt"></i></a>';
 
             $table->addRow(
@@ -85,10 +85,10 @@ class Project extends CoreController
             $validation = Services::validation();
             $validation->setRuleGroup('projectRules');
 
-            if (!$validation->withRequest($this->request)->run()) {
+            if ( ! $validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
-                return redirect()->to(base_url('admin/project/create'));
+                return redirect()->to(site_url('admin/project/create'));
             }
 
             $projectModel = new \App\Models\Project();
@@ -107,7 +107,11 @@ class Project extends CoreController
             }
 
             foreach (Status::$defaultStatus as $defaultStatus) {
-                $ticketStatusModel->insert(['name' => $defaultStatus, 'projectId' => $projectId]);
+                $ticketStatusModel->insert([
+                    'name' => $defaultStatus['name'],
+                    'priority' => $defaultStatus['priority'],
+                    'projectId' => $projectId
+                ]);
             }
 
             foreach (Field::$systemFields as $field) {
@@ -118,7 +122,7 @@ class Project extends CoreController
             }
 
             $this->session->setFlashdata('successForm', lang('admin.project.form.createSuccess'));
-            return redirect()->to(base_url('admin/project'));
+            return redirect()->to(site_url('admin/project'));
         }
 
         $this->global['title'] = lang('admin.project.title.create');
@@ -138,10 +142,10 @@ class Project extends CoreController
             $validation = Services::validation();
             $validation->setRuleGroup('projectRules');
 
-            if (!$validation->withRequest($this->request)->run()) {
+            if ( ! $validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
-                return redirect()->to(base_url('admin/project/edit/' . $projectId));
+                return redirect()->to(site_url('admin/project/edit/' . $projectId));
             }
 
             $projectModel = new \App\Models\Project();
@@ -152,7 +156,7 @@ class Project extends CoreController
             $projectModel->update($projectId, $data);
 
             $this->session->setFlashdata('successForm', lang('admin.project.form.editSuccess'));
-            return redirect()->to(base_url('admin/project'));
+            return redirect()->to(site_url('admin/project'));
         }
 
         $this->global['title'] = lang('admin.project.title.edit', ['name' => $this->global['project']->name]);
@@ -173,7 +177,7 @@ class Project extends CoreController
             $projectModel->delete($projectId);
 
             $this->session->setFlashdata('successForm', lang('admin.project.form.deleteSuccess'));
-            return redirect()->to(base_url('admin/project'));
+            return redirect()->to(site_url('admin/project'));
         }
 
         $this->global['title'] = lang('admin.project.title.delete', ['name' => $this->global['project']->name]);
@@ -223,7 +227,7 @@ class Project extends CoreController
             }
 
             $this->session->setFlashdata('successForm', lang('admin.project.form.managePermissionsSuccess'));
-            return redirect()->to(base_url('admin/project'));
+            return redirect()->to(site_url('admin/project'));
         }
 
         $projectRoleRights = $projectRoleRightsModel->where('projectId', $projectId)->findAll();
@@ -270,22 +274,22 @@ class Project extends CoreController
      */
     protected function isRequestValid(?string $modelId = null): ?RedirectResponse
     {
-        if (!$this->isLoggedIn()) {
-            return redirect()->to(base_url('login'));
+        if ( ! $this->isLoggedIn()) {
+            return redirect()->to(site_url('login'));
         }
 
-        if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_PROJECT_MANAGE)) {
+        if ( ! $this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_PROJECT_MANAGE)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
-            return redirect()->to(base_url(''));
+            return redirect()->to(site_url(''));
         }
 
         if ($modelId !== null) {
             $projectModel = new \App\Models\Project;
             $this->global['project'] = $projectModel->find($modelId);
 
-            if (!$this->global['project'] instanceof \App\Models\Project) {
+            if ( ! $this->global['project'] instanceof \App\Models\Project) {
                 $this->session->setFlashdata('errorForm', lang('admin.project.notFound'));
-                return redirect()->to(base_url('admin/project'));
+                return redirect()->to(site_url('admin/project'));
             }
         }
 
@@ -293,8 +297,8 @@ class Project extends CoreController
     }
 
     /**
-     * @param array  $projectRoleRights
-     * @param int    $roleId
+     * @param array $projectRoleRights
+     * @param int $roleId
      * @param string $right
      *
      * @return bool

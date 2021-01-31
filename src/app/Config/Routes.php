@@ -74,37 +74,50 @@ $routes->setAutoRoute(false);
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
 // --- Controllers/Home::class
-$routes->get('/', 'home'); // TODO use redirect when it is not buggy
+$routes->addRedirect('/', site_url('home'));
 $routes->get('home', 'Home::index');
 
 // --- Controllers/Login::class
 $routes->add('login', 'Login::index');
 
-// --- Controllers/Project::class
+// --- Controllers/Logout::class
+$routes->add('logout', 'Logout::index');
+
+// --- Controllers/Project/
 $routes->group(
     'project',
     static function ($routes) {
         /** @var RouteCollection $routes */
 
+        // --- Controllers/Project/Start::class
         $routes->add('(:num)/start', 'Project\Start::index/$1');
 
+        // --- Controllers/Project/Backlog::class
         $routes->add('(:num)/backlog', 'Project\Backlog::index/$1');
         $routes->add('(:num)/backlog/view/(:num)', 'Project\Backlog::viewTicket/$1/$2');
         $routes->add('(:num)/backlog/create', 'Project\Backlog::createTicket/$1');
         $routes->add('(:num)/backlog/edit/(:num)', 'Project\Backlog::editTicket/$1/$2');
 
+        // --- Controllers/Project/Kanban::class
+        $routes->add('(:num)/kanban', 'Project\Kanban::index/$1');
+        $routes->post('(:num)/kanban/updateTicketStatus', 'Project\Kanban::updateTicketStatus/$1');
+
+        // --- Controllers/Project/Admin/General::class
         $routes->add('(:num)/admin/general', 'Project\Admin\General::index/$1');
 
+        // --- Controllers/Project/Admin/TicketType::class
         $routes->add('(:num)/admin/ticketType', 'Project\Admin\TicketType::index/$1');
         $routes->add('(:num)/admin/ticketType/create', 'Project\Admin\TicketType::create/$1');
         $routes->add('(:num)/admin/ticketType/edit/(:num)', 'Project\Admin\TicketType::edit/$1/$2');
         $routes->add('(:num)/admin/ticketType/delete/(:num)', 'Project\Admin\TicketType::delete/$1/$2');
 
+        // --- Controllers/Project/Admin/TicketStatus::class
         $routes->add('(:num)/admin/ticketStatus', 'Project\Admin\TicketStatus::index/$1');
         $routes->add('(:num)/admin/ticketStatus/create', 'Project\Admin\TicketStatus::create/$1');
         $routes->add('(:num)/admin/ticketStatus/edit/(:num)', 'Project\Admin\TicketStatus::edit/$1/$2');
         $routes->add('(:num)/admin/ticketStatus/delete/(:num)', 'Project\Admin\TicketStatus::delete/$1/$2');
 
+        // --- Controllers/Project/Admin/TicketFields::class
         $routes->add('(:num)/admin/ticketFields', 'Project\Admin\TicketFields::index/$1');
         $routes->add('(:num)/admin/ticketFields/create', 'Project\Admin\TicketFields::create/$1');
         $routes->add('(:num)/admin/ticketFields/edit/(:num)', 'Project\Admin\TicketFields::edit/$1/$2');
@@ -112,7 +125,7 @@ $routes->group(
     }
 );
 
-// ---- Controllers/Admin
+// ---- Controllers/Admin/
 $routes->group(
     'admin',
     static function ($routes) {
@@ -137,7 +150,7 @@ $routes->group(
         $routes->get('group/assign/(:any)', 'Admin\Group::assign/$1'); // DEATH ROUTE!
         $routes->post('group/assign/(:any)', 'Admin\Group::assign/$1'); // DEATH ROUTE!
 
-        // --- Controllers/Admin/role::class
+        // --- Controllers/Admin/Role::class
         $routes->get('role', 'Admin\Role::index');
         $routes->get('role/create', 'Admin\Role::create');
         $routes->post('role/create', 'Admin\Role::create');

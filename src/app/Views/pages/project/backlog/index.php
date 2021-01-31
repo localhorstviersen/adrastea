@@ -14,7 +14,7 @@
 
 <?= $this->section('titleButtons') ?>
     <?php if ($this->data['user']->hasProjectRight($this->data['project'], \App\Models\ProjectRoleRights::RIGHT_PROJECT_TICKET_MANAGE)): ?>
-        <a href="<?= base_url('project/' . $this->data['project']->id . '/backlog/create') ?>"
+        <a href="<?= site_url('project/' . $this->data['project']->id . '/backlog/create') ?>"
            class="btn btn-sm btn-primary shadow-sm">
             <i class="fas fa-plus fa-sm text-white-50"></i> <?= lang('general.create') ?>
         </a>

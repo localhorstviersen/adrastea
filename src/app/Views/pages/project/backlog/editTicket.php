@@ -6,7 +6,7 @@
 <div class="card shadow mb-4">
     <div class="card-body">
         <div class="table-responsive">
-            <form method="post" action="<?= base_url('project/' . $this->data['project']->id . '/backlog/edit/' . $this->data['ticket']->id) ?>">
+            <form method="post" action="<?= site_url('project/' . $this->data['project']->id . '/backlog/edit/' . $this->data['ticket']->id) ?>">
                 <?php foreach ($this->data['fields'] as $field): ?>
                     <?= $field->display() ?>
                 <?php endforeach; ?>
@@ -20,7 +20,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('titleButtons') ?>
-    <a href="<?= base_url('project/' . $this->data['project']->id . '/backlog') ?>"
+    <a href="<?= site_url('project/' . $this->data['project']->id . '/backlog') ?>"
        class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50"></i> <?= lang('general.back') ?>
     </a>

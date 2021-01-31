@@ -30,7 +30,7 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('titleButtons') ?>
-    <a href="<?= base_url('project/' . $this->data['project']->id . '/backlog') ?>"
+    <a href="<?= site_url('project/' . $this->data['project']->id . '/backlog') ?>"
        class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50"></i> <?= lang('general.back') ?>
     </a>

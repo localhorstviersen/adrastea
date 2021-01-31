@@ -116,6 +116,13 @@ class Validation
                 'alpha_numeric_space' => 'project.form.ticketFields.description.validation.alpha_numeric_space',
                 'max_length' => 'project.form.ticketFields.description.validation.max_length'
             ]
+        ],
+        'required' => [
+            'label' => 'project.form.ticketFields.required.name',
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'project.form.ticketFields.required.validation.required'
+            ]
         ]
     ];
 
@@ -132,6 +139,14 @@ class Validation
                 'required' => 'project.form.ticketStatus.name.validation.required',
                 'alpha_numeric_space' => 'project.form.ticketStatus.name.validation.alpha_numeric_space',
                 'max_length' => 'project.form.ticketStatus.name.validation.max_length',
+            ]
+        ],
+        'priority' => [
+            'label' => 'project.form.ticketStatus.priority.name',
+            'rules' => 'required|numeric',
+            'errors' => [
+                'required' => 'project.form.ticketStatus.priority.validation.required',
+                'numeric' => 'project.form.ticketStatus.priority.validation.numeric'
             ]
         ]
     ];
