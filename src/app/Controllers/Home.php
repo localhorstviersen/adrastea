@@ -29,7 +29,7 @@ class Home extends CoreController
     protected function isRequestValid(?string $modelId = null): ?RedirectResponse
     {
         if (!$this->isLoggedIn()) {
-            return redirect()->to(base_url('login'));
+            return redirect()->to(site_url('login'));
         }
 
         return null;

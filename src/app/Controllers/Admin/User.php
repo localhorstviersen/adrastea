@@ -48,7 +48,7 @@ class User extends CoreController
 
         /** @var \App\Models\User $user */
         foreach ($users as $user) {
-            $assignUrl = '<a href="' . base_url('admin/group?user=') . $user->sId .
+            $assignUrl = '<a href="' . site_url('admin/group?user=') . $user->sId .
                 '"><i class="fas fa-user-plus"></i></a>';
 
             $table->addRow(
@@ -69,12 +69,12 @@ class User extends CoreController
     protected function isRequestValid(?string $modelId = null): ?RedirectResponse
     {
         if (!$this->isLoggedIn()) {
-            return redirect()->to(base_url('login'));
+            return redirect()->to(site_url('login'));
         }
 
         if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_USER)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
-            return redirect()->to(base_url(''));
+            return redirect()->to(site_url(''));
         }
 
         return null;

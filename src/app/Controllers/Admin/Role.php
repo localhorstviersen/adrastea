@@ -48,9 +48,9 @@ class Role extends CoreController
         /** @var \App\Models\Role $role */
         foreach ($roles as $role) {
             $editUrl =
-                '<a href="' . base_url('admin/role/edit/' . $role->id) . '"><i class="fa fa-pencil-alt"></i></a>';
+                '<a href="' . site_url('admin/role/edit/' . $role->id) . '"><i class="fa fa-pencil-alt"></i></a>';
             $deleteUrl =
-                '<a href="' . base_url('admin/role/delete/' . $role->id) . '"><i class="fa fa-trash-alt"></i></a>';
+                '<a href="' . site_url('admin/role/delete/' . $role->id) . '"><i class="fa fa-trash-alt"></i></a>';
 
             $table->addRow(
                 [
@@ -81,7 +81,7 @@ class Role extends CoreController
             if (!$validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
-                return redirect()->to(base_url('admin/role/create'));
+                return redirect()->to(site_url('admin/role/create'));
             }
 
             $roleModel = new \App\Models\Role();
@@ -90,7 +90,7 @@ class Role extends CoreController
             $this->updateGlobalRights($roleId);
 
             $this->session->setFlashdata('successForm', lang('role.form.create.success'));
-            return redirect()->to(base_url('admin/role'));
+            return redirect()->to(site_url('admin/role'));
         }
 
         $this->global['globalRights'] = Rights::getAllGlobalRights();
@@ -121,7 +121,7 @@ class Role extends CoreController
             if (!$validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
-                return redirect()->to(base_url('admin/role/edit/' . $roleId));
+                return redirect()->to(site_url('admin/role/edit/' . $roleId));
             }
 
             $data = ['name' => $this->request->getPost('name')];
@@ -129,7 +129,7 @@ class Role extends CoreController
             $this->updateGlobalRights($roleId);
 
             $this->session->setFlashdata('successForm', lang('role.form.edit.success'));
-            return redirect()->to(base_url('admin/role'));
+            return redirect()->to(site_url('admin/role'));
         }
 
         $this->global['globalRights'] = Rights::getAllGlobalRights();
@@ -159,7 +159,7 @@ class Role extends CoreController
             $roleModel->delete($roleId);
 
             $this->session->setFlashdata('successForm', lang('role.form.delete.success'));
-            return redirect()->to(base_url('admin/role'));
+            return redirect()->to(site_url('admin/role'));
         }
 
         $this->global['title'] = lang('role.title.delete', ['name' => $this->global['role']->name]);
@@ -172,12 +172,12 @@ class Role extends CoreController
     protected function isRequestValid(?string $modelId = null): ?RedirectResponse
     {
         if (!$this->isLoggedIn()) {
-            return redirect()->to(base_url('login'));
+            return redirect()->to(site_url('login'));
         }
 
         if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_ROLE)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
-            return redirect()->to(base_url(''));
+            return redirect()->to(site_url(''));
         }
 
         if ($modelId !== null) {
@@ -186,7 +186,7 @@ class Role extends CoreController
 
             if (!$this->global['role'] instanceof \App\Models\Role) {
                 $this->session->setFlashdata('errorForm', lang('role.notFound'));
-                return redirect()->to(base_url('admin/role'));
+                return redirect()->to(site_url('admin/role'));
             }
         }
 

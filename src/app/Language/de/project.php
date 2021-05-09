@@ -5,6 +5,7 @@ return [
         'title' => 'Deine Projekte',
         'start' => 'Projekt - {name} - Start',
         'backlog' => 'Projekt - {name} - Backlog',
+        'kanban' => 'Projekt - {name} - Kanban Board',
         'admin' => [
             'general' => [
                 'title' => 'Projekt - {name} - Administration - Allgemeine Einstellungen',
@@ -20,22 +21,28 @@ return [
             ],
             'ticketFields' => [
                 'title' => 'Projekt - {name} - Administration - Ticket Felder',
-                'short' => 'Ticket Felder'
-            ]
-        ]
+                'short' => 'Ticket Felder',
+            ],
+        ],
     ],
     'backlog' => [
         'table' => [
             'id' => '#',
             'title' => 'Titel',
+            'status' => 'Status',
             'assigned' => 'Zugewiesen',
-        ]
+            'reporter' => 'Melder',
+        ],
     ],
     'table' => [
+        'ticketStatus' => [
+            'priority' => 'Priorität',
+        ],
         'ticketFields' => [
             'type' => 'Typ',
             'name' => 'Name',
-            'systemField' => 'System'
+            'systemField' => 'System',
+            'required' => 'Pflichtfeld',
         ],
         'name' => 'Name',
         'description' => 'Beschreibung',
@@ -45,10 +52,10 @@ return [
     'noRight' => 'Du hast keine Berechtigung dies zu sehen!',
     'notFound' => 'Projekt wurde nicht gefunden.',
     'ticketType' => [
-        'notFound' => 'Ticket Typ wurde nicht gefunden'
+        'notFound' => 'Ticket Typ wurde nicht gefunden',
     ],
     'ticketStatus' => [
-        'notFound' => 'Ticket Status wurde nicht gefunden'
+        'notFound' => 'Ticket Status wurde nicht gefunden',
     ],
     'ticketFields' => [
         'notFound' => 'Ticket Feld wurde nicht gefunden',
@@ -58,8 +65,8 @@ return [
             'type' => 'Typ-Auswahlfeld',
             'status' => 'Status-Auswahlfeld',
             'user' => 'Benutzer-Auswahlfeld',
-            'textArea' => 'Textarea'
-        ]
+            'textArea' => 'Textarea',
+        ],
     ],
 
     'form' => [
@@ -70,18 +77,18 @@ return [
                 'validation' => [
                     'required' => 'Du musst einen Namen angeben!',
                     'alpha_numeric_space' => 'Du musst einen Namen angeben!',
-                    'max_length' => 'Der Name darf maximal 50 Zeichen lang sein!'
-                ]
+                    'max_length' => 'Der Name darf maximal 50 Zeichen lang sein!',
+                ],
             ],
             'create' => [
-                'success' => 'Ticket Typ wurde erfolgreich erstellt.'
+                'success' => 'Ticket Typ wurde erfolgreich erstellt.',
             ],
             'edit' => [
-                'success' => 'Ticket Typ wurde erfolgreich bearbeitet.'
+                'success' => 'Ticket Typ wurde erfolgreich bearbeitet.',
             ],
             'delete' => [
-                'success' => 'Ticket Typ wurde erfolgreich gelöscht.'
-            ]
+                'success' => 'Ticket Typ wurde erfolgreich gelöscht.',
+            ],
         ],
         'ticketStatus' => [
             'name' => [
@@ -90,18 +97,26 @@ return [
                 'validation' => [
                     'required' => 'Du musst einen Namen angeben!',
                     'alpha_numeric_space' => 'Du musst einen Namen angeben!',
-                    'max_length' => 'Der Name darf maximal 50 Zeichen lang sein!'
-                ]
+                    'max_length' => 'Der Name darf maximal 50 Zeichen lang sein!',
+                ],
+            ],
+            'priority' => [
+                'name' => 'Priorität',
+                'help' => 'Anhand dieser Zahl wird entschieden, an welcher Stelle dieser Status im Kanban Board dargestellt wird.',
+                'validation' => [
+                    'required' => 'Du musst eine Priorität angeben!',
+                    'numeric' => 'Du musst eine Priorität angeben!',
+                ],
             ],
             'create' => [
-                'success' => 'Ticket Status wurde erfolgreich erstellt.'
+                'success' => 'Ticket Status wurde erfolgreich erstellt.',
             ],
             'edit' => [
-                'success' => 'Ticket Status wurde erfolgreich bearbeitet.'
+                'success' => 'Ticket Status wurde erfolgreich bearbeitet.',
             ],
             'delete' => [
-                'success' => 'Ticket Status wurde erfolgreich gelöscht.'
-            ]
+                'success' => 'Ticket Status wurde erfolgreich gelöscht.',
+            ],
         ],
         'ticketFields' => [
             'identification' => [
@@ -111,8 +126,8 @@ return [
                     'required' => 'Du musst einen Identifizierungsname angeben!',
                     'alpha_numeric_space' => 'Du musst einen Identifizierungsname angeben!',
                     'max_length' => 'Der Identifizierungsname darf maximal 50 Zeichen lang sein!',
-                    'existsAlready' => 'Dieser Identifizierungsname existiert bereits.'
-                ]
+                    'existsAlready' => 'Dieser Identifizierungsname existiert bereits.',
+                ],
             ],
             'name' => [
                 'name' => 'Name',
@@ -120,16 +135,16 @@ return [
                 'validation' => [
                     'required' => 'Du musst einen Namen angeben!',
                     'alpha_numeric_punct' => 'Du musst einen Namen angeben!',
-                    'max_length' => 'Der Name darf maximal 50 Zeichen lang sein!'
-                ]
+                    'max_length' => 'Der Name darf maximal 50 Zeichen lang sein!',
+                ],
             ],
             'type' => [
                 'name' => 'Typ',
                 'help' => 'Typ des Ticket Feldes',
                 'validation' => [
                     'required' => 'Du musst einen Typen auswählen!',
-                    'in_list' => 'Du musst einen Typen auswählen!'
-                ]
+                    'in_list' => 'Du musst einen Typen auswählen!',
+                ],
             ],
             'description' => [
                 'name' => 'Beschreibung',
@@ -137,19 +152,26 @@ return [
                 'validation' => [
                     'required' => 'Du musst eine Beschreibung angeben!',
                     'alpha_numeric_space' => 'Du musst eine Beschreibung angeben!',
-                    'max_length' => 'Die Beschreibung darf maximal 250 Zeichen lang sein!'
-                ]
+                    'max_length' => 'Die Beschreibung darf maximal 250 Zeichen lang sein!',
+                ],
+            ],
+            'required' => [
+                'name' => 'Pflichtfeld',
+                'help' => 'Ist dieses Feld ein Pflichtfeld?',
+                'validation' => [
+                    'required' => 'Du musst etwas angeben!',
+                ],
             ],
             'create' => [
-                'success' => 'Ticket Feld wurde erfolgreich erstellt.'
+                'success' => 'Ticket Feld wurde erfolgreich erstellt.',
             ],
             'edit' => [
-                'success' => 'Ticket Feld wurde erfolgreich bearbeitet.'
+                'success' => 'Ticket Feld wurde erfolgreich bearbeitet.',
             ],
             'delete' => [
                 'success' => 'Ticket Feld wurde erfolgreich gelöscht.',
-                'systemField' => 'Das Ticket Feld wurde vom System erstellt und kann nicht gelöscht werden!'
-            ]
-        ]
-    ]
+                'systemField' => 'Das Ticket Feld wurde vom System erstellt und kann nicht gelöscht werden!',
+            ],
+        ],
+    ],
 ];

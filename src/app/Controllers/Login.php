@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Controllers;
-
 
 use App\Libraries\LDAP;
 use App\Models\User;
@@ -56,7 +54,7 @@ class Login extends CoreController
                     if ($userData !== null && $userModel->saveOrUpdateByUserData($userData)) {
                         $this->session->set('isLoggedIn', true);
                         $this->session->set('userSId', $userData->sId);
-                        return redirect()->to(base_url('home'));
+                        return redirect()->to(site_url('home'));
                     }
 
                     $this->session->setFlashdata('errorForm', ['Beim Login ist ein Fehler aufgetreten!']);
@@ -66,7 +64,7 @@ class Login extends CoreController
             } else {
                 $this->session->setFlashdata('errorForm', $validation->getErrors());
             }
-            return redirect()->to(base_url('login'));
+            return redirect()->to(site_url('login'));
         }
 
         $this->global['title'] = 'Login';
@@ -79,7 +77,7 @@ class Login extends CoreController
     protected function isRequestValid(?string $modelId = null): ?RedirectResponse
     {
         if ($this->isLoggedIn()) {
-            return redirect()->to(base_url(''));
+            return redirect()->to(site_url(''));
         }
 
         return null;

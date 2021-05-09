@@ -2,6 +2,9 @@
 
 namespace App\Libraries\TicketFields;
 
+use App\Controllers\CoreController;
+use Config\Services;
+
 /**
  * Class UserField
  *
@@ -11,6 +14,18 @@ namespace App\Libraries\TicketFields;
 class UserField extends Field
 {
     private array $options = [];
+
+    /**
+     * Field constructor.
+     *
+     * @param  \App\Models\Project\Ticket\Field  $field
+     */
+    public function __construct(\App\Models\Project\Ticket\Field $field)
+    {
+        parent::__construct($field);
+
+        $this->setValue(Services::session()->get(CoreController::SESSION_USER_SID));
+    }
 
     /** @inheritDoc */
     public function display(): string

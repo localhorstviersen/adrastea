@@ -49,7 +49,7 @@ class Backlog extends CoreController
             return $requestValid;
         }
 
-        if (!$this->user->hasProjectRight(
+        if ( ! $this->user->hasProjectRight(
             $this->project,
             ProjectRoleRights::RIGHT_PROJECT_TICKET_MANAGE
         )
@@ -57,14 +57,14 @@ class Backlog extends CoreController
             $this->session->setFlashdata('errorForm', lang('project.noRight'));
 
             return redirect()->to(
-                base_url('project/' . $projectId . '/backlog')
+                site_url('project/'.$projectId.'/backlog')
             );
         }
 
         $this->global['title'] = lang(
             'backlog.title.ticket.create',
             [
-                'projectName' => $this->project->name
+                'projectName' => $this->project->name,
             ]
         );
 
@@ -74,12 +74,12 @@ class Backlog extends CoreController
         if ($this->isPost()) {
             $manager->hydrate($this->request->getPost());
 
-            if (!$manager->validate()) {
+            if ( ! $manager->validate()) {
                 $errors = implode('<br>', $manager->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
 
                 return redirect()->to(
-                    base_url(
+                    site_url(
                         sprintf('project/%d/backlog/create', $projectId)
                     )
                 );
@@ -89,7 +89,7 @@ class Backlog extends CoreController
             $ticketId = $ticketModel->insert(
                 [
                     'projectId' => $projectId,
-                    'userSId' => $this->user->sId
+                    'userSId' => $this->user->sId,
                 ]
             );
 
@@ -102,7 +102,7 @@ class Backlog extends CoreController
             );
 
             return redirect()->to(
-                base_url(sprintf('project/%d/backlog', $projectId))
+                site_url(sprintf('project/%d/backlog', $projectId))
             );
         }
 
@@ -129,7 +129,7 @@ class Backlog extends CoreController
             return $requestValid;
         }
 
-        if (!$this->user->hasProjectRight(
+        if ( ! $this->user->hasProjectRight(
             $this->project,
             ProjectRoleRights::RIGHT_PROJECT_TICKET_MANAGE
         )
@@ -137,7 +137,7 @@ class Backlog extends CoreController
             $this->session->setFlashdata('errorForm', lang('project.noRight'));
 
             return redirect()->to(
-                base_url(sprintf('project/%d/backlog', $projectId))
+                site_url(sprintf('project/%d/backlog', $projectId))
             );
         }
 
@@ -145,7 +145,7 @@ class Backlog extends CoreController
             'backlog.title.ticket.edit',
             [
                 'projectName' => $this->project->name,
-                'ticketTitle' => $this->ticket->getFieldValue('title')
+                'ticketTitle' => $this->ticket->getFieldValue('title'),
             ]
         );
 
@@ -156,12 +156,12 @@ class Backlog extends CoreController
         if ($this->isPost()) {
             $manager->hydrate($this->request->getPost());
 
-            if (!$manager->validate()) {
+            if ( ! $manager->validate()) {
                 $errors = implode('<br>', $manager->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
 
                 return redirect()->to(
-                    base_url(
+                    site_url(
                         sprintf(
                             'project/%d/backlog/edit/%d',
                             $projectId,
@@ -180,7 +180,7 @@ class Backlog extends CoreController
             );
 
             return redirect()->to(
-                base_url(sprintf('project/%d/backlog', $projectId))
+                site_url(sprintf('project/%d/backlog', $projectId))
             );
         }
 
@@ -200,7 +200,7 @@ class Backlog extends CoreController
             return $requestValid;
         }
 
-        if (!$this->user->hasProjectRight(
+        if ( ! $this->user->hasProjectRight(
             $this->project,
             ProjectRoleRights::RIGHT_PROJECT_VIEW
         )
@@ -208,7 +208,7 @@ class Backlog extends CoreController
             $this->session->setFlashdata('errorForm', lang('project.noRight'));
 
             return redirect()->to(
-                base_url(sprintf('project/%d/backlog', $projectId))
+                site_url(sprintf('project/%d/backlog', $projectId))
             );
         }
 
@@ -216,7 +216,7 @@ class Backlog extends CoreController
             'backlog.title.ticket.view',
             [
                 'projectName' => $this->project->name,
-                'ticketTitle' => $this->ticket->getFieldValue('title')
+                'ticketTitle' => $this->ticket->getFieldValue('title'),
             ]
         );
 
@@ -233,8 +233,8 @@ class Backlog extends CoreController
     protected function isRequestValid(
         ?string $modelId = null
     ): ?RedirectResponse {
-        if (!$this->isLoggedIn()) {
-            return redirect()->to(base_url('login'));
+        if ( ! $this->isLoggedIn()) {
+            return redirect()->to(site_url('login'));
         }
 
         if ($modelId !== null) {
@@ -244,16 +244,16 @@ class Backlog extends CoreController
             $this->global['project'] = $projectModel->find($modelId) instanceof
             Project ? $projectModel->find($modelId) : null;
 
-            if (!$this->project instanceof Project) {
+            if ( ! $this->project instanceof Project) {
                 $this->session->setFlashdata(
                     'errorForm',
                     lang('project.notFound')
                 );
 
-                return redirect()->to(base_url('project'));
+                return redirect()->to(site_url('/'));
             }
 
-            if (!$this->user->hasProjectRight(
+            if ( ! $this->user->hasProjectRight(
                 $this->project,
                 ProjectRoleRights::RIGHT_PROJECT_VIEW
             )
@@ -263,7 +263,7 @@ class Backlog extends CoreController
                     lang('project.noMemberOfProject')
                 );
 
-                return redirect()->to(base_url('project'));
+                return redirect()->to(site_url('/'));
             }
         }
 
@@ -293,14 +293,14 @@ class Backlog extends CoreController
             $this->global['ticket'] = $ticketModel->find($ticketId) instanceof
             Ticket ? $ticketModel->find($ticketId) : null;
 
-            if (!$this->ticket instanceof Ticket) {
+            if ( ! $this->ticket instanceof Ticket) {
                 $this->session->setFlashdata(
                     'errorForm',
                     lang('backlog.ticket.notFound')
                 );
 
                 return redirect()->to(
-                    base_url(sprintf('project/%d/backlog', $projectId))
+                    site_url(sprintf('project/%d/backlog', $projectId))
                 );
             }
         }
@@ -314,7 +314,7 @@ class Backlog extends CoreController
     private function createBacklogTable(): string
     {
         $customSettings = [
-            'table_open' => '<table class="table table-bordered" id="backlogTable" width="100%" cellspacing="0">'
+            'table_open' => '<table class="table table-bordered" id="backlogTable" style="width: 100%;">',
         ];
 
         $table = new Table($customSettings);
@@ -322,15 +322,17 @@ class Backlog extends CoreController
             [
                 lang('project.backlog.table.id'),
                 lang('project.backlog.table.title'),
+                lang('project.backlog.table.status'),
                 lang('project.backlog.table.assigned'),
-                ''
+                lang('project.backlog.table.reporter'),
+                '',
             ]
         );
 
         $tickets = $this->project->getTickets();
 
         foreach ($tickets as $ticket) {
-            $viewUrl = base_url(
+            $viewUrl = site_url(
                 sprintf(
                     'project/%d/backlog/view/%d',
                     $ticket->projectId,
@@ -338,16 +340,19 @@ class Backlog extends CoreController
                 )
             );
 
-            $editUrl = sprintf(
+            $editUrl = $this->user->hasProjectRight(
+                $this->project,
+                ProjectRoleRights::RIGHT_PROJECT_TICKET_MANAGE
+            ) ? sprintf(
                 '<a href="%s"><i class="fa fa-pencil-alt"></i></a>',
-                base_url(
+                site_url(
                     sprintf(
                         'project/%d/backlog/edit/%d',
                         $ticket->projectId,
                         $ticket->id
                     )
                 )
-            );
+            ) : '';
 
             $table->addRow(
                 [
@@ -357,8 +362,10 @@ class Backlog extends CoreController
                         $viewUrl,
                         $ticket->getFieldValue('title')
                     ),
+                    Ticket\Status::getNameById($ticket->getFieldValue('status')),
                     User::getFullNameBySId($ticket->getFieldValue('assign')),
-                    sprintf('%s', $editUrl)
+                    User::getFullNameBySId($ticket->getFieldValue('reporter')),
+                    sprintf('%s', $editUrl),
                 ]
             );
         }

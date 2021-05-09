@@ -46,7 +46,7 @@ class TicketType extends AdminCoreController
             if (!$validation->withRequest($this->request)->run()) {
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
-                return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketType/create'));
+                return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketType/create'));
             }
 
             $ticketTypesModel = new Types();
@@ -57,7 +57,7 @@ class TicketType extends AdminCoreController
             $ticketTypesModel->insert($data);
 
             $this->session->setFlashdata('successForm', lang('project.form.ticketType.create.success'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketType'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketType'));
         }
 
         $this->global['title'] = lang('project.title.admin.ticketTypes.title', ['name' => $this->project->name]);
@@ -82,7 +82,7 @@ class TicketType extends AdminCoreController
                 $errors = implode('<br>', $validation->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
                 return redirect()->to(
-                    base_url('project/' . $this->project->id . '/admin/ticketType/edit/' . $ticketTypeId)
+                    site_url('project/' . $this->project->id . '/admin/ticketType/edit/' . $ticketTypeId)
                 );
             }
 
@@ -93,7 +93,7 @@ class TicketType extends AdminCoreController
             $ticketTypesModel->update($ticketTypeId, $data);
 
             $this->session->setFlashdata('successForm', lang('project.form.ticketType.edit.success'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketType'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketType'));
         }
 
         $this->global['title'] = lang('project.title.admin.ticketTypes.title', ['name' => $this->project->name]);
@@ -115,7 +115,7 @@ class TicketType extends AdminCoreController
             $ticketTypesModel->delete($ticketTypeId);
 
             $this->session->setFlashdata('successForm', lang('project.form.ticketType.delete.success'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketType'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketType'));
         }
 
         $this->global['title'] = lang('project.title.admin.ticketTypes.title', ['name' => $this->project->name]);
@@ -137,7 +137,7 @@ class TicketType extends AdminCoreController
 
         if (!$this->global['ticketType'] instanceof Types) {
             $this->session->setFlashdata('errorForm', lang('project.ticketType.notFound'));
-            return redirect()->to(base_url('project/' . $this->project->id . '/admin/ticketType'));
+            return redirect()->to(site_url('project/' . $this->project->id . '/admin/ticketType'));
         }
 
         return null;
@@ -165,7 +165,7 @@ class TicketType extends AdminCoreController
         foreach ($types as $type) {
             $editUrl = sprintf(
                 '<a href="%s"><i class="fas fa-pencil-alt"></i></a>',
-                base_url(
+                site_url(
                     sprintf(
                         'project/%d/admin/ticketType/edit/%d',
                         $this->project->id,
@@ -176,7 +176,7 @@ class TicketType extends AdminCoreController
 
             $deleteUrl = sprintf(
                 '<a href="%s"><i class="fas fa-trash-alt"></i></a>',
-                base_url(
+                site_url(
                     sprintf(
                         'project/%d/admin/ticketType/delete/%d',
                         $this->project->id,

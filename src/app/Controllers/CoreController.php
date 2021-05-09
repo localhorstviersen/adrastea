@@ -56,6 +56,8 @@ abstract class CoreController extends Controller
             'successForm'
         );
         $this->global['errorForm'] = $this->session->getFlashdata('errorForm');
+
+        $this->setNavigationGlobals();
     }
 
     /**
@@ -121,4 +123,18 @@ abstract class CoreController extends Controller
     abstract protected function isRequestValid(
         ?string $modelId = null
     ): ?RedirectResponse;
+
+    private function setNavigationGlobals(): void
+    {
+        $uri = Services::uri();
+        $this->global['segments'] = $segments = $uri->getSegments();
+
+        if(count($segments) === 2) {
+            $this->global['inProjectManagement'] = $segments[0] === 'admin' && $segments[1] === 'project';
+            $this->global['inUserManagement'] = $segments[0] === 'admin' && in_array($segments[1], ['group', 'user', 'role']);
+        } else {
+            $this->global['inProjectManagement'] = false;
+            $this->global['inUserManagement'] = false;
+        }
+    }
 }

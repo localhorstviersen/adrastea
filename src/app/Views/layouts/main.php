@@ -31,16 +31,7 @@
                     <?= $this->renderSection('titleButtons') ?>
                 </div>
 
-                <?php if (!empty($this->data['successForm'])): ?>
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <?= $this->data['successForm'] ?>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                            <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                <?php endif; ?>
-
-                <?php if (!empty($this->data['errorForm'])): ?>
+                <?php if ( ! empty($this->data['errorForm'])): ?>
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
                         <?= $this->data['errorForm'] ?>
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -56,7 +47,7 @@
         <footer class="sticky-footer bg-white">
             <div class="container my-auto">
                 <div class="copyright text-center my-auto">
-                    <span>Copyright &copy; Adrastea 2020</span>
+                    <span>Copyright &copy; Adrastea 2020 - <?= date('Y') ?></span>
                 </div>
             </div>
         </footer>
@@ -67,26 +58,6 @@
     <i class="fas fa-angle-up"></i>
 </a>
 
-<!-- Logout Modal-->
-<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-     aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">×</span>
-                </button>
-            </div>
-            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-            <div class="modal-footer">
-                <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancel</button>
-                <a class="btn btn-primary" href="login.html">Logout</a>
-            </div>
-        </div>
-    </div>
-</div>
-
 <!-- JavaScript-->
 <script src="/assets/js/jquery.min.js"></script>
 <script src="/assets/js/bootstrap.bundle.min.js"></script>
@@ -95,6 +66,29 @@
 <script src="/assets/js/chart.min.js"></script>
 <script src="/assets/js/chart.min.js"></script>
 <script src="/assets/js/datatables.min.js"></script>
+<script src="/assets/js/sweetalert2.all.min.js"></script>
+
+<script type="application/javascript">
+    const Toast = Swal.mixin({
+        toast: true,
+        position: 'top-end',
+        width: '20%',
+        showConfirmButton: false,
+        showCloseButton: true,
+        timer: 5000,
+        timerProgressBar: true,
+        didOpen: (toast) => {
+            toast.addEventListener('mouseenter', Swal.stopTimer)
+            toast.addEventListener('mouseleave', Swal.resumeTimer)
+        }
+    });
+</script>
+
+<?php if ( ! empty($this->data['successForm'])): ?>
+    <script type="application/javascript">
+        Toast.fire({icon: 'success', title: '<?= $this->data['successForm'] ?>'});
+    </script>
+<?php endif; ?>
 
 <!-- Custom Javascript -->
 <?= $this->renderSection('customJs') ?>

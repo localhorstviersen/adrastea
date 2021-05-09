@@ -6,7 +6,7 @@
   "license": "MIT",
   "require": {
     "php": ">=7.4",
-    "codeigniter4/framework": "4.0.3",
+    "codeigniter4/framework": "^4",
     "ext-ldap": "*",
     "ext-json": "*",
     "adldap2/adldap2": "^10.2"

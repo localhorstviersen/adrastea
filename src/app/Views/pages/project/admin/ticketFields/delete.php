@@ -1,14 +1,14 @@
 <?= $this->extend('layouts/project/layoutAdmin') ?>
 
 <?= $this->section('projectBodyAdmin') ?>
-    <a href="<?= base_url('project/' . $this->data['project']->id . '/admin/ticketFields') ?>"
+    <a href="<?= site_url('project/' . $this->data['project']->id . '/admin/ticketFields') ?>"
        class="btn btn-sm btn-primary shadow-sm">
         <i class="fas fa-arrow-left fa-sm text-white-50"></i> <?= lang('general.back') ?>
     </a>
 
     <br><br>
 
-    <form method="post" action="<?= base_url(
+    <form method="post" action="<?= site_url(
         'project/' . $this->data['project']->id . '/admin/ticketFields/delete/' . $this->data['field']->id
     ) ?>">
         <div class="form-group">
