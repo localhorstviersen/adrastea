@@ -1,8 +1,6 @@
 <?php
 
-
 namespace App\Models\Project\Ticket;
-
 
 use CodeIgniter\Model;
 
@@ -23,4 +21,23 @@ class Types extends Model
     protected $allowedFields = ['projectId', 'name'];
 
     public static array $defaultTypes = ['Issue', 'Story', 'Bug'];
+
+    /**
+     * This method will return an array with all types with their database id as key. As first entry there is an item
+     * with null as key.
+     *
+     * @return string[]
+     */
+    public static function getTypes(): array
+    {
+        $typesArray = [];
+        $types = (new Types())->findAll();
+
+        /** @var self $type */
+        foreach ($types as $type) {
+            $typesArray[$type->id] = $type->name;
+        }
+
+        return $typesArray;
+    }
 }

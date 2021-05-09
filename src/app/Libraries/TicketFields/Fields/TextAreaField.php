@@ -1,15 +1,16 @@
 <?php
 
+namespace App\Libraries\TicketFields\Fields;
 
-namespace App\Libraries\TicketFields;
+use App\Libraries\TicketFields\Field;
 
 /**
- * Class TextField
+ * Class TicketAreaField
  *
  * @package App\Libraries\TicketFields
  * @author  Lars Riße <me@elyday.net>
  */
-class TextField extends Field
+class TextAreaField extends Field
 {
     /** @inheritDoc */
     public function display(): string
@@ -21,7 +22,7 @@ class TextField extends Field
             $this->nameText
         );
 
-        $field .= form_input(
+        $field .= form_textarea(
             $this->identification,
             $this->getValue(),
             $this->getInputOptions()

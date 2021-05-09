@@ -6,6 +6,7 @@ namespace App\Models\Project\Ticket;
 
 use App\Models\Project;
 use CodeIgniter\Model;
+use ReflectionException;
 
 /**
  * Class Fields
@@ -13,14 +14,15 @@ use CodeIgniter\Model;
  * @package App\Models\Project\Ticket
  * @author  Lars Riße <me@elyday.net>
  *
- * @property int $id
- * @property int $projectId
- * @property string $type
- * @property string $identification
- * @property string $name
- * @property string $description
- * @property bool $systemField
- * @property bool $required
+ * @property int         $id
+ * @property int         $projectId
+ * @property string      $type
+ * @property string      $identification
+ * @property string      $name
+ * @property string      $description
+ * @property string|null $definition
+ * @property bool        $systemField
+ * @property bool        $required
  */
 class Field extends Model
 {
@@ -32,8 +34,9 @@ class Field extends Model
         'identification',
         'name',
         'description',
+        'definition',
         'systemField',
-        'required'
+        'required',
     ];
     protected $useTimestamps = true;
 
@@ -43,6 +46,9 @@ class Field extends Model
     public const TYPE_STATUS = 'status';
     public const TYPE_USER = 'user';
     public const TYPE_TEXTAREA = 'textarea';
+    public const TYPE_RADIO_BOX = 'radioBox';
+    public const TYPE_CHECK_BOX = 'checkBox';
+    public const TYPE_PREDEFINED_LINK = 'predefinedLink';
 
     /** @var array */
     public static array $systemFields = [
@@ -50,45 +56,73 @@ class Field extends Model
             'identification' => 'title',
             'name' => 'Titel',
             'type' => self::TYPE_TEXT,
-            'description' => 'Titel des Tickets'
+            'description' => 'Titel des Tickets',
         ],
         [
             'identification' => 'assign',
             'name' => 'Zugewiesener Benutzer',
             'type' => self::TYPE_USER,
-            'description' => 'Zugewiesener Benutzer'
+            'description' => 'Zugewiesener Benutzer',
         ],
         [
             'identification' => 'reporter',
             'name' => 'Melder',
             'type' => self::TYPE_USER,
-            'description' => 'Wer hat das Ticket gemeldet?'
+            'description' => 'Wer hat das Ticket gemeldet?',
         ],
         [
             'identification' => 'type',
             'name' => 'Ticket-Typ',
             'type' => self::TYPE_TYPE,
-            'description' => 'Ticket-Typ'
+            'description' => 'Ticket-Typ',
         ],
         [
             'identification' => 'status',
             'name' => 'Ticket-Status',
             'type' => self::TYPE_STATUS,
-            'description' => 'Status des Tickets'
+            'description' => 'Status des Tickets',
         ],
         [
             'identification' => 'description',
             'name' => 'Beschreibung',
             'type' => self::TYPE_TEXTAREA,
-            'description' => 'Die Beschreibung des Tickets'
-        ]
+            'description' => 'Die Beschreibung des Tickets',
+        ],
     ];
+
+    /**
+     * This method will return all field types which can have input in the
+     * definition column.
+     *
+     * @return string[]
+     */
+    public static function fieldTypesWithDefinition(): array
+    {
+        return [
+            self::TYPE_CHECK_BOX,
+            self::TYPE_RADIO_BOX,
+            self::TYPE_PREDEFINED_LINK,
+        ];
+    }
+
+    /**
+     * This method will return all field types which have a select field (like check box).
+     *
+     * @return string[]
+     */
+    public static function fieldSelectTypes(): array
+    {
+        return [
+            self::TYPE_CHECK_BOX,
+            self::TYPE_RADIO_BOX,
+        ];
+    }
 
     /**
      * This method will find a field by its identification name and the project id.
      *
-     * @param  int  $projectId
-     * @param  string  $identification
+     * @param int    $projectId
+     * @param string $identification
      *
      * @return Field|null
      */
@@ -97,12 +131,11 @@ class Field extends Model
         string $identification
     ): ?Field {
         $model = new self();
-        $field = $model->where('projectId', $projectId)->where(
-            'identification',
-            $identification
-        )->find();
+        $field = $model->where('projectId', $projectId)
+            ->where('identification', $identification)
+            ->find();
 
-        return ! empty($field) && $field[0] instanceof self ? $field[0] : null;
+        return !empty($field) && $field[0] instanceof self ? $field[0] : null;
     }
 
     /**
@@ -118,8 +151,24 @@ class Field extends Model
             self::TYPE_TYPE => lang('project.ticketFields.type.type'),
             self::TYPE_STATUS => lang('project.ticketFields.type.status'),
             self::TYPE_USER => lang('project.ticketFields.type.user'),
-            self::TYPE_TEXTAREA => lang('project.ticketFields.type.textArea')
+            self::TYPE_TEXTAREA => lang('project.ticketFields.type.textArea'),
+            self::TYPE_RADIO_BOX => lang('project.ticketFields.type.radioBox'),
+            self::TYPE_CHECK_BOX => lang('project.ticketFields.type.checkBox'),
+            self::TYPE_PREDEFINED_LINK => lang('project.ticketFields.type.predefinedLink'),
         ];
+    }
+
+    /**
+     * This method will return all possible types for field creation with its translated text.
+     *
+     * @return array
+     */
+    public static function getTypesForFieldCreation(): array
+    {
+        $types = self::getTypes();
+        unset($types[self::TYPE_TYPE], $types[self::TYPE_STATUS]);
+
+        return $types;
     }
 
     /**
@@ -152,7 +201,71 @@ class Field extends Model
     }
 
     /**
-     * @param  int  $ticketId
+     * This method will return all type relations models.
+     *
+     * @return Project\Ticket\Field\TypeRelation[]
+     */
+    public function getTypeRelations(): array
+    {
+        return (new Project\Ticket\Field\TypeRelation())->where('fieldId', $this->id)->findAll();
+    }
+
+    /**
+     * This method will return all type entries where this field is assigned to.
+     *
+     * @return Types[]
+     */
+    public function getAssignedTypes(): array
+    {
+        $typeIds = $this->getAssignedTypeIds();
+
+        if (empty($typeIds)) {
+            return [];
+        }
+
+        return (new Types())->whereIn('id', $typeIds)->findAll();
+    }
+
+    /**
+     * This method will return all type ids where this field is assigned to.
+     *
+     * @return int[]
+     */
+    public function getAssignedTypeIds(): array
+    {
+        $typeRelations = $this->getTypeRelations();
+
+        $typeIds = [];
+        foreach ($typeRelations as $typeRelation) {
+            $typeIds[] = $typeRelation->typeId;
+        }
+
+        return $typeIds;
+    }
+
+    /**
+     * This method will remove all type relations for this field.
+     */
+    public function clearTypeRelations(): void
+    {
+        (new Project\Ticket\Field\TypeRelation())->where('fieldId', $this->id)->delete();
+    }
+
+    /**
+     * @param int[] $typeIds
+     *
+     * @throws ReflectionException
+     */
+    public function storeTypeRelations(array $typeIds): void
+    {
+        $typeRelationModel = new Project\Ticket\Field\TypeRelation();
+        foreach ($typeIds as $typeId) {
+            $typeRelationModel->insert(['fieldId' => $this->id, 'typeId' => $typeId]);
+        }
+    }
+
+    /**
+     * @param int $ticketId
      *
      * @return string|null
      */
@@ -165,7 +278,7 @@ class Field extends Model
             ->where('fieldId', $this->id)
             ->first();
 
-        if ( ! $valueModel instanceof Project\Ticket\Field\Value) {
+        if (!$valueModel instanceof Project\Ticket\Field\Value) {
             return null;
         }
 
@@ -173,12 +286,12 @@ class Field extends Model
     }
 
     /**
-     * @param  int  $ticketId
-     * @param  string  $value
+     * @param int         $ticketId
+     * @param string|null $value
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function setValue(int $ticketId, string $value): void
+    public function setValue(int $ticketId, ?string $value): void
     {
         $model = new Project\Ticket\Field\Value();
         /** @var Project\Ticket\Field\Value|null $valueFind */
@@ -199,7 +312,7 @@ class Field extends Model
                 'projectId' => $this->projectId,
                 'ticketId' => $ticketId,
                 'fieldId' => $this->id,
-                'value' => $value
+                'value' => $value,
             ]
         );
     }

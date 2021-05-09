@@ -34,9 +34,19 @@ interface FieldInterface
     public function setValue(?string $value): void;
 
     /**
+     * @return bool
+     */
+    public function isRequired(): bool;
+
+    /**
      * @param  bool  $required
      */
     public function setRequired(bool $required): void;
+
+    /**
+     * @return bool
+     */
+    public function isDisabled(): bool;
 
     /**
      * @param  bool  $disabled
@@ -59,7 +69,8 @@ interface FieldInterface
     public function hydrateFromTicket(Ticket $ticket): void;
 
     /**
-     * @param  int  $ticketId
+     * @param  int                 $ticketId
+     * @param  TicketFieldManager  $manager
      */
-    public function storeToDatabase(int $ticketId): void;
+    public function storeToDatabase(int $ticketId, TicketFieldManager $manager): void;
 }

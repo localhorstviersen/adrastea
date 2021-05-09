@@ -9,10 +9,10 @@ use CodeIgniter\Model;
  *
  * @package App\Models\Project\Ticket\Field
  *
- * @property int    $id
- * @property int    $projectId
- * @property int    $fieldId
- * @property string $value
+ * @property int         $id
+ * @property int         $projectId
+ * @property int         $fieldId
+ * @property string|null $value
  */
 class Value extends Model
 {

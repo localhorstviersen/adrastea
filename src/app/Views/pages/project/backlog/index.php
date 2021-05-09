@@ -13,12 +13,23 @@
 <?= $this->endSection() ?>
 
 <?= $this->section('titleButtons') ?>
-    <?php if ($this->data['user']->hasProjectRight($this->data['project'], \App\Models\ProjectRoleRights::RIGHT_PROJECT_TICKET_MANAGE)): ?>
-        <a href="<?= site_url('project/' . $this->data['project']->id . '/backlog/create') ?>"
-           class="btn btn-sm btn-primary shadow-sm">
+<?php if ($this->data['user']->hasProjectRight(
+    $this->data['project'],
+    \App\Models\ProjectRoleRights::RIGHT_PROJECT_TICKET_MANAGE
+)): ?>
+    <div class="dropdown">
+        <a class="btn btn-sm btn-primary shadow-sm dropdown-toggle" href="#" role="button" id="createTicketDropdown"
+           data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fas fa-plus fa-sm text-white-50"></i> <?= lang('general.create') ?>
         </a>
-    <?php endif; ?>
+
+        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+            <?php foreach ($this->data['ticketTypes'] as $key => $value): ?>
+                <a class="dropdown-item" href="<?= site_url(sprintf('project/%d/backlog/create/%d', $this->data['project']->id, $key)) ?>"><?= $value ?></a>
+            <?php endforeach; ?>
+        </div>
+    </div>
+<?php endif; ?>
 <?= $this->endSection() ?>
 
 <?= $this->section('customJs') ?>

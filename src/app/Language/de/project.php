@@ -30,6 +30,7 @@ return [
             'id' => '#',
             'title' => 'Titel',
             'status' => 'Status',
+            'type' => 'Ticket-Typ',
             'assigned' => 'Zugewiesen',
             'reporter' => 'Melder',
         ],
@@ -39,6 +40,7 @@ return [
             'priority' => 'Priorität',
         ],
         'ticketFields' => [
+            'ticketType' => 'Ticket-Typ',
             'type' => 'Typ',
             'name' => 'Name',
             'systemField' => 'System',
@@ -66,6 +68,12 @@ return [
             'status' => 'Status-Auswahlfeld',
             'user' => 'Benutzer-Auswahlfeld',
             'textArea' => 'Textarea',
+            'radioBox' => 'Radio Box',
+            'checkBox' => 'Check Box',
+            'predefinedLink' => 'Vordefinierter Link',
+        ],
+        'predefinedLink' => [
+            'additionalHelpText' => 'Bei diesem Feld handelt es sich um einen sog. "Vordefinierten Link". Die hier vorgenommene Eingabe wird in der View-Ansicht dieses Tickets Bestandteil des folgenden Links: "{link}" (%s ist hierbei der Platzhalter für die Eingabe).',
         ],
     ],
 
@@ -138,12 +146,32 @@ return [
                     'max_length' => 'Der Name darf maximal 50 Zeichen lang sein!',
                 ],
             ],
+            'ticketType' => [
+                'name' => 'Ticket-Typ',
+                'help' => 'Mit dieser Einstellung hat man die Möglichkeit, ein Feld nur für bestimmte Ticket Typen darstellen zu lassen.',
+                'validation' => [
+                    'in_list' => 'Ticket-Typ ungültig!',
+                ],
+            ],
             'type' => [
                 'name' => 'Typ',
                 'help' => 'Typ des Ticket Feldes',
                 'validation' => [
                     'required' => 'Du musst einen Typen auswählen!',
                     'in_list' => 'Du musst einen Typen auswählen!',
+                ],
+            ],
+            'definition' => [
+                'name' => 'Feld Definition',
+                'help' => [
+                    'default' => 'Lorem Ipsum',
+                    'selectFields' => 'Bitte gebe die möglichen Auswahl-Möglichkeiten mit einem ";" separiert ein.',
+                    'predefinedLinkField' => 'Mit diesem Feld-Typen kann man einen Link vorgeben, welcher mittels einem Platzhalter durch User-Input erweitert werden kann. Der Platzhalter ist %s und darf nur ein mal im String vorkommen.',
+                ],
+                'validation' => [
+                    'required' => 'Es muss eine Definition angegeben werden.',
+                    'regex_match' => 'Die angegebene Definition ist nicht gültig.',
+                    'moreThanOne' => 'Der Platzhalter muss ein mal in der Definition vorkommen.',
                 ],
             ],
             'description' => [

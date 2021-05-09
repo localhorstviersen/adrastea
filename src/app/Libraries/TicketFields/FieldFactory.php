@@ -3,6 +3,14 @@
 
 namespace App\Libraries\TicketFields;
 
+use App\Libraries\TicketFields\Fields\CheckBoxField;
+use App\Libraries\TicketFields\Fields\PredefinedLinkField;
+use App\Libraries\TicketFields\Fields\RadioBoxField;
+use App\Libraries\TicketFields\Fields\StatusField;
+use App\Libraries\TicketFields\Fields\TextAreaField;
+use App\Libraries\TicketFields\Fields\TextField;
+use App\Libraries\TicketFields\Fields\TypeField;
+use App\Libraries\TicketFields\Fields\UserField;
 use App\Models\Project\Ticket\Field;
 use App\Models\User;
 
@@ -15,8 +23,8 @@ use App\Models\User;
 class FieldFactory
 {
     /**
-     * @param  Field  $field
-     * @param  bool   $disabled
+     * @param Field $field
+     * @param bool  $disabled
      *
      * @return FieldInterface|null
      */
@@ -68,6 +76,22 @@ class FieldFactory
 
         if ($field->type === Field::TYPE_TEXTAREA) {
             $newField = new TextAreaField($field);
+        }
+
+        if ($field->type === Field::TYPE_CHECK_BOX) {
+            $newField = new CheckBoxField($field);
+        }
+
+        if ($field->type === Field::TYPE_RADIO_BOX) {
+            $newField = new RadioBoxField($field);
+        }
+
+        if ($field->type === Field::TYPE_PREDEFINED_LINK) {
+            $newField = new PredefinedLinkField($field);
+        }
+
+        if (!$newField instanceof \App\Libraries\TicketFields\Field) {
+            return null;
         }
 
         $newField->setDisabled($disabled);

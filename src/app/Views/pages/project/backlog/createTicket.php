@@ -6,7 +6,7 @@
 <div class="card shadow mb-4">
     <div class="card-body">
         <div class="table-responsive">
-            <form method="post" action="<?= site_url('project/' . $this->data['project']->id . '/backlog/create') ?>">
+            <form method="post" action="<?= site_url(sprintf('project/%d/backlog/create/%d', $this->data['project']->id, $this->data['ticketTypeId'])) ?>">
                 <?php foreach ($this->data['fields'] as $field): ?>
                     <?= $field->display() ?>
                 <?php endforeach; ?>

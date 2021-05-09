@@ -1,32 +1,17 @@
 <?php
 
-namespace App\Libraries\TicketFields;
+namespace App\Libraries\TicketFields\Fields;
 
-use App\Controllers\CoreController;
-use Config\Services;
+use App\Libraries\TicketFields\Field;
 
 /**
- * Class UserField
+ * Class TextField
  *
  * @package App\Libraries\TicketFields
  * @author  Lars Riße <me@elyday.net>
  */
-class UserField extends Field
+class TextField extends Field
 {
-    private array $options = [];
-
-    /**
-     * Field constructor.
-     *
-     * @param  \App\Models\Project\Ticket\Field  $field
-     */
-    public function __construct(\App\Models\Project\Ticket\Field $field)
-    {
-        parent::__construct($field);
-
-        $this->setValue(Services::session()->get(CoreController::SESSION_USER_SID));
-    }
-
     /** @inheritDoc */
     public function display(): string
     {
@@ -37,9 +22,8 @@ class UserField extends Field
             $this->nameText
         );
 
-        $field .= form_dropdown(
+        $field .= form_input(
             $this->identification,
-            $this->options,
             $this->getValue(),
             $this->getInputOptions()
         );
@@ -51,15 +35,6 @@ class UserField extends Field
         );
         $field .= '</div>';
 
-
         return $field;
-    }
-
-    /**
-     * @param  array  $options
-     */
-    public function setOptions(array $options): void
-    {
-        $this->options = $options;
     }
 }

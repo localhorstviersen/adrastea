@@ -29,8 +29,9 @@
     <label for="password" class="sr-only">Passwort</label>
     <input type="password" name="password" id="password" class="form-control" placeholder="Passwort" required>
     <input type="submit" name="submit" class="btn btn-lg btn-primary btn-block" value="Einloggen">
-    <p class="mt-5 mb-3 text-muted">&copy; <?= date('Y') ?> by Adrastea Project - <a
-                href="https://github.com/localhorstviersen/adrastea">GitHub</a></p>
+    <p class="mt-5 mb-3 text-muted">
+        &copy; 2020 - <?= date('Y') ?> by Adrastea Project - <a href="https://github.com/localhorstviersen/adrastea">GitHub</a>
+    </p>
 </form>
 </body>
 </html>
