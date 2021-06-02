@@ -110,7 +110,49 @@ class Validation
         ],
         'description' => [
             'label' => 'project.form.ticketFields.description.name',
-            'rules' => 'required|alpha_numeric_space|max_length[250]',
+            'rules' => 'required|alpha_numeric_punct|max_length[250]',
+            'errors' => [
+                'required' => 'project.form.ticketFields.description.validation.required',
+                'alpha_numeric_space' => 'project.form.ticketFields.description.validation.alpha_numeric_space',
+                'max_length' => 'project.form.ticketFields.description.validation.max_length'
+            ]
+        ],
+        'required' => [
+            'label' => 'project.form.ticketFields.required.name',
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'project.form.ticketFields.required.validation.required'
+            ]
+        ]
+    ];
+
+    /**
+     * This rules will be used in App\Controllers\Project\Admin\TicketFields.
+     *
+     * @var array
+     */
+    public array $projectTicketFieldsRulesWithoutFieldType = [
+        'identification' => [
+            'label' => 'project.form.ticketFields.identification.name',
+            'rules' => 'required|alpha_numeric_space|max_length[50]',
+            'errors' => [
+                'required' => 'project.form.ticketFields.identification.validation.required',
+                'alpha_numeric_space' => 'project.form.ticketFields.identification.validation.alpha_numeric_space',
+                'max_length' => 'project.form.ticketFields.identification.validation.max_length',
+            ]
+        ],
+        'name' => [
+            'label' => 'project.form.ticketFields.name.name',
+            'rules' => 'required|alpha_numeric_punct|max_length[50]',
+            'errors' => [
+                'required' => 'project.form.ticketFields.name.validation.required',
+                'alpha_numeric_punct' => 'project.form.ticketFields.name.validation.alpha_numeric_punct',
+                'max_length' => 'project.form.ticketFields.name.validation.max_length'
+            ]
+        ],
+        'description' => [
+            'label' => 'project.form.ticketFields.description.name',
+            'rules' => 'required|alpha_numeric_punct|max_length[250]',
             'errors' => [
                 'required' => 'project.form.ticketFields.description.validation.required',
                 'alpha_numeric_space' => 'project.form.ticketFields.description.validation.alpha_numeric_space',

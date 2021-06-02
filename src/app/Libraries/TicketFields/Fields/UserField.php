@@ -1,16 +1,33 @@
 <?php
 
-namespace App\Libraries\TicketFields;
+namespace App\Libraries\TicketFields\Fields;
+
+use App\Controllers\CoreController;
+use App\Libraries\TicketFields\Field;
+use App\Models\Project\Ticket\Field as FieldModel;
+use Config\Services;
 
 /**
- * Class StatusField
+ * Class UserField
  *
  * @package App\Libraries\TicketFields
  * @author  Lars Riße <me@elyday.net>
  */
-class StatusField extends Field
+class UserField extends Field
 {
     private array $options = [];
+
+    /**
+     * Field constructor.
+     *
+     * @param FieldModel $field
+     */
+    public function __construct(FieldModel $field)
+    {
+        parent::__construct($field);
+
+        $this->setValue(Services::session()->get(CoreController::SESSION_USER_SID));
+    }
 
     /** @inheritDoc */
     public function display(): string
@@ -41,7 +58,7 @@ class StatusField extends Field
     }
 
     /**
-     * @param  array  $options
+     * @param array $options
      */
     public function setOptions(array $options): void
     {

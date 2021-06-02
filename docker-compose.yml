@@ -13,7 +13,7 @@ services:
     ports:
       - 3306:3306
     volumes:
-      - './storage/db:/var/lib/mysql'
+      - './docker/storage/db:/var/lib/mysql'
     networks:
       - adrastea
   portainer:
@@ -44,7 +44,7 @@ services:
     ports:
       - 80:80
     volumes:
-      - './../src/:/var/www/html'
+      - './src/:/var/www/html'
     depends_on:
       - db
     networks:

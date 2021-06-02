@@ -23,3 +23,5 @@ When using Docker, the following steps must be performed:
         - `ldap.base.dn`
         - `ldap.suffix`
 1. Run `docker-compose up -d` and visit `http://127.0.0.1`
+
+See more to Docker [here](https://github.com/localhorstviersen/adrastea/tree/develop/docker).

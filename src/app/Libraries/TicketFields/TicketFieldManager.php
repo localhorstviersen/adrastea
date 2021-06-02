@@ -6,6 +6,7 @@ namespace App\Libraries\TicketFields;
 use App\Models\Project\Ticket;
 use App\Models\Project\Ticket\Field;
 use CodeIgniter\Config\Services;
+use ReflectionException;
 
 /**
  * Class TicketFieldManager
@@ -15,26 +16,38 @@ use CodeIgniter\Config\Services;
 class TicketFieldManager
 {
     /** @var \App\Libraries\TicketFields\Field[] */
-    private array $fields;
+    private array $fields = [];
     /** @var string[] */
     private array $errors = [];
 
     /**
-     * @param  Field[]  $fieldModels
-     * @param  bool     $disabled
+     * @param Field[] $fieldModels
+     * @param bool    $disabled
+     * @param int     $ticketTypeId
      */
-    public function initialize(array $fieldModels, bool $disabled = false): void
+    public function initialize(array $fieldModels, int $ticketTypeId, bool $disabled = false): void
     {
         foreach ($fieldModels as $fieldModel) {
+            $assignedTypeIds = $fieldModel->getAssignedTypeIds();
+
+            if (!empty($assignedTypeIds) && !in_array($ticketTypeId, $assignedTypeIds)) {
+                continue;
+            }
+
             $fieldClass = FieldFactory::createFieldByModel($fieldModel, $disabled);
             if ($fieldClass !== null) {
                 $this->fields[$fieldModel->identification] = $fieldClass;
+
+                if ($fieldModel->identification === 'type') {
+                    $fieldClass->setValue($ticketTypeId);
+                    $fieldClass->setDisabled(true);
+                }
             }
         }
     }
 
     /**
-     * @param  array  $params
+     * @param array $params
      */
     public function hydrate(array $params): void
     {
@@ -44,7 +57,7 @@ class TicketFieldManager
     }
 
     /**
-     * @param  Ticket  $ticket
+     * @param Ticket $ticket
      */
     public function hydrateFromTicket(Ticket $ticket): void
     {
@@ -87,18 +100,14 @@ class TicketFieldManager
     }
 
     /**
-     * @param  string  $identification
+     * @param string $identification
      *
      * @return \App\Libraries\TicketFields\Field|null
      */
     public function getField(
         string $identification
     ): ?\App\Libraries\TicketFields\Field {
-        if (!isset($this->fields[$identification])) {
-            return null;
-        }
-
-        return $this->fields[$identification];
+        return $this->fields[$identification] ?? null;
     }
 
     /**
@@ -110,14 +119,14 @@ class TicketFieldManager
     }
 
     /**
-     * @param  int  $ticketId
+     * @param int $ticketId
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function storeTicketFieldDataToDatabase(int $ticketId)
+    public function storeTicketFieldDataToDatabase(int $ticketId): void
     {
         foreach ($this->fields as $field) {
-            $field->storeToDatabase($ticketId);
+            $field->storeToDatabase($ticketId, $this);
         }
     }
 }

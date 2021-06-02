@@ -11,7 +11,7 @@ There are the following containers:
 
 ## Run Docker Container
 
-To run the Docker containers, you must first build the PHP Apache Docker image. To do this, run the command `docker-compose build`.
+To run the Docker containers, you must first pull all images. To do this, run the command `docker-compose pull`.
 
 Next, all you have to do is `docker-compose up -d` and the docker containers are started and running in the background.
 
@@ -19,16 +19,17 @@ Next, all you have to do is `docker-compose up -d` and the docker containers are
 
 ### PHP-Apache
 
-We use as base image the official [PHP-Apache Docker Image](https://hub.docker.com/_/php) with PHP version 7.4.
+We are using the image `thecodingmachine/php:7.4-v4-apache-node14` from [TheCodingMachine](https://github.com/thecodingmachine/docker-images-php)
 
-Die folgenden zusätzlichen PHP Erweiterungen werden im `Dockerfile` installiert:
+When starting the container with this image the command `composer install` will be executed. Also the container will install the following php extension:
 
-* zip
-* intl
+- intl
+- zip
+- ldap
+- json
+- mysqli
 
-Diese sind für das Ausführen von Codeigniter 4 erforderlich.
-
-#### Environment Variablen
+#### Environment Variables
 
 Via the environment variables you can make a variety of MariaDB configurations.
 

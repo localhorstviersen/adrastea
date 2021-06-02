@@ -4,6 +4,7 @@
 namespace App\Libraries\TicketFields;
 
 use App\Models\Project\Ticket;
+use ReflectionException;
 
 /**
  * Class Field
@@ -27,7 +28,7 @@ abstract class Field implements FieldInterface
     /**
      * Field constructor.
      *
-     * @param  Ticket\Field  $field
+     * @param Ticket\Field $field
      */
     public function __construct(Ticket\Field $field)
     {
@@ -48,7 +49,13 @@ abstract class Field implements FieldInterface
     /** @inheritDoc */
     public function setValue(?string $value): void
     {
-        $this->value = $value;
+        $this->value = $value ?? '';
+    }
+
+    /** @inheritDoc */
+    public function isRequired(): bool
+    {
+        return $this->required;
     }
 
     /** @inheritDoc */
@@ -57,15 +64,21 @@ abstract class Field implements FieldInterface
         $this->required = $required;
 
         if ($required) {
-            if ( ! in_array('required', $this->rules, true)) {
+            if (!in_array('required', $this->rules, true)) {
                 $this->addRule('required');
             }
         } else {
             $key = array_search('required', $this->rules, true);
-            if ( ! empty($key)) {
+            if (!empty($key)) {
                 unset($this->rules[$key]);
             }
         }
+    }
+
+    /** @inheritDoc */
+    public function isDisabled(): bool
+    {
+        return $this->disabled;
     }
 
     /** @inheritDoc */
@@ -97,9 +110,9 @@ abstract class Field implements FieldInterface
     /**
      * @inheritDoc
      *
-     * @throws \ReflectionException
+     * @throws ReflectionException
      */
-    public function storeToDatabase(int $ticketId): void
+    public function storeToDatabase(int $ticketId, TicketFieldManager $manager): void
     {
         $this->field->setValue($ticketId, $this->value);
     }
@@ -119,7 +132,7 @@ abstract class Field implements FieldInterface
             return [];
         }
 
-        if ( ! $this->required && empty($this->value)) {
+        if (!$this->required && empty($this->value)) {
             return [];
         }
 
@@ -127,8 +140,8 @@ abstract class Field implements FieldInterface
             $this->identification => [
                 'label' => $this->nameText,
                 'rules' => $this->getRules(),
-                'errors' => $this->getErrorMessages()
-            ]
+                'errors' => $this->getErrorMessages(),
+            ],
         ];
     }
 
@@ -141,6 +154,8 @@ abstract class Field implements FieldInterface
     }
 
     /**
+     * This method defines all possible error messages.
+     *
      * @return string[]
      */
     protected function getErrorMessages(): array
@@ -148,16 +163,19 @@ abstract class Field implements FieldInterface
         return [
             'alpha_numeric_space' => 'backlog.form.alpha_numeric_space',
             'required' => 'backlog.form.required',
-            'numeric' => 'backlog.form.numeric'
+            'numeric' => 'backlog.form.numeric',
         ];
     }
 
+    /**
+     * @return array
+     */
     protected function getInputOptions(): array
     {
         $options = [
             'id' => $this->identification,
             'class' => 'form-control',
-            'aria-describedby' => $this->identification.'Help'
+            'aria-describedby' => $this->identification . 'Help',
         ];
 
         if ($this->required) {

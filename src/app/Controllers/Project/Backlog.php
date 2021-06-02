@@ -38,10 +38,14 @@ class Backlog extends CoreController
         );
         $this->global['backlogTable'] = $this->createBacklogTable();
 
+        $ticketTypes = Ticket\Types::getTypes();
+        unset($ticketTypes[null]);
+        $this->global['ticketTypes'] = $ticketTypes;
+
         return view('pages/project/backlog/index', $this->global);
     }
 
-    public function createTicket(int $projectId)
+    public function createTicket(int $projectId, int $ticketTypeId)
     {
         $requestValid = $this->isRequestValid($projectId);
 
@@ -49,7 +53,15 @@ class Backlog extends CoreController
             return $requestValid;
         }
 
-        if ( ! $this->user->hasProjectRight(
+        $ticketType = (new Ticket\Types())->find($ticketTypeId);
+
+        if (!$ticketType instanceof Ticket\Types) {
+            return redirect()->to(
+                site_url(sprintf('project/%d/backlog', $projectId))
+            );
+        }
+
+        if (!$this->user->hasProjectRight(
             $this->project,
             ProjectRoleRights::RIGHT_PROJECT_TICKET_MANAGE
         )
@@ -57,7 +69,7 @@ class Backlog extends CoreController
             $this->session->setFlashdata('errorForm', lang('project.noRight'));
 
             return redirect()->to(
-                site_url('project/'.$projectId.'/backlog')
+                site_url(sprintf('project/%d/backlog', $projectId))
             );
         }
 
@@ -69,18 +81,20 @@ class Backlog extends CoreController
         );
 
         $manager = new TicketFieldManager();
-        $manager->initialize($this->project->getFields());
+        $manager->initialize($this->project->getFields(), $ticketTypeId);
 
         if ($this->isPost()) {
-            $manager->hydrate($this->request->getPost());
+            $params = $this->request->getPost();
+            $params['type'] = $ticketTypeId;
+            $manager->hydrate($params);
 
-            if ( ! $manager->validate()) {
+            if (!$manager->validate()) {
                 $errors = implode('<br>', $manager->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
 
                 return redirect()->to(
                     site_url(
-                        sprintf('project/%d/backlog/create', $projectId)
+                        sprintf('project/%d/backlog/create/%d', $projectId, $ticketTypeId)
                     )
                 );
             }
@@ -107,13 +121,14 @@ class Backlog extends CoreController
         }
 
         $this->global['fields'] = $manager->getFields();
+        $this->global['ticketTypeId'] = $ticketTypeId;
 
         return view('pages/project/backlog/createTicket', $this->global);
     }
 
     /**
-     * @param  int  $projectId
-     * @param  int  $ticketId
+     * @param int $projectId
+     * @param int $ticketId
      *
      * @return RedirectResponse|string
      * @throws \ReflectionException
@@ -129,7 +144,7 @@ class Backlog extends CoreController
             return $requestValid;
         }
 
-        if ( ! $this->user->hasProjectRight(
+        if (!$this->user->hasProjectRight(
             $this->project,
             ProjectRoleRights::RIGHT_PROJECT_TICKET_MANAGE
         )
@@ -150,13 +165,15 @@ class Backlog extends CoreController
         );
 
         $manager = new TicketFieldManager();
-        $manager->initialize($this->project->getFields());
+        $manager->initialize($this->project->getFields(), $this->ticket->getFieldValue('type'));
         $manager->hydrateFromTicket($this->ticket);
 
         if ($this->isPost()) {
-            $manager->hydrate($this->request->getPost());
+            $params = $this->request->getPost();
+            $params['type'] = $this->ticket->getFieldValue('type');
+            $manager->hydrate($params);
 
-            if ( ! $manager->validate()) {
+            if (!$manager->validate()) {
                 $errors = implode('<br>', $manager->getErrors());
                 $this->session->setFlashdata('errorForm', $errors);
 
@@ -200,7 +217,7 @@ class Backlog extends CoreController
             return $requestValid;
         }
 
-        if ( ! $this->user->hasProjectRight(
+        if (!$this->user->hasProjectRight(
             $this->project,
             ProjectRoleRights::RIGHT_PROJECT_VIEW
         )
@@ -222,7 +239,7 @@ class Backlog extends CoreController
 
 
         $manager = new TicketFieldManager();
-        $manager->initialize($this->project->getFields(), true);
+        $manager->initialize($this->project->getFields(), $this->ticket->getFieldValue('type'), true);
         $manager->hydrateFromTicket($this->ticket);
         $this->global['fields'] = $manager->getFields();
 
@@ -233,7 +250,7 @@ class Backlog extends CoreController
     protected function isRequestValid(
         ?string $modelId = null
     ): ?RedirectResponse {
-        if ( ! $this->isLoggedIn()) {
+        if (!$this->isLoggedIn()) {
             return redirect()->to(site_url('login'));
         }
 
@@ -244,7 +261,7 @@ class Backlog extends CoreController
             $this->global['project'] = $projectModel->find($modelId) instanceof
             Project ? $projectModel->find($modelId) : null;
 
-            if ( ! $this->project instanceof Project) {
+            if (!$this->project instanceof Project) {
                 $this->session->setFlashdata(
                     'errorForm',
                     lang('project.notFound')
@@ -253,7 +270,7 @@ class Backlog extends CoreController
                 return redirect()->to(site_url('/'));
             }
 
-            if ( ! $this->user->hasProjectRight(
+            if (!$this->user->hasProjectRight(
                 $this->project,
                 ProjectRoleRights::RIGHT_PROJECT_VIEW
             )
@@ -271,8 +288,8 @@ class Backlog extends CoreController
     }
 
     /**
-     * @param  int|null  $projectId
-     * @param  int|null  $ticketId
+     * @param int|null $projectId
+     * @param int|null $ticketId
      *
      * @return RedirectResponse|null
      */
@@ -293,7 +310,7 @@ class Backlog extends CoreController
             $this->global['ticket'] = $ticketModel->find($ticketId) instanceof
             Ticket ? $ticketModel->find($ticketId) : null;
 
-            if ( ! $this->ticket instanceof Ticket) {
+            if (!$this->ticket instanceof Ticket) {
                 $this->session->setFlashdata(
                     'errorForm',
                     lang('backlog.ticket.notFound')
@@ -323,6 +340,7 @@ class Backlog extends CoreController
                 lang('project.backlog.table.id'),
                 lang('project.backlog.table.title'),
                 lang('project.backlog.table.status'),
+                lang('project.backlog.table.type'),
                 lang('project.backlog.table.assigned'),
                 lang('project.backlog.table.reporter'),
                 '',
@@ -363,6 +381,7 @@ class Backlog extends CoreController
                         $ticket->getFieldValue('title')
                     ),
                     Ticket\Status::getNameById($ticket->getFieldValue('status')),
+                    Ticket\Types::getTypes()[$ticket->getFieldValue('type')],
                     User::getFullNameBySId($ticket->getFieldValue('assign')),
                     User::getFullNameBySId($ticket->getFieldValue('reporter')),
                     sprintf('%s', $editUrl),

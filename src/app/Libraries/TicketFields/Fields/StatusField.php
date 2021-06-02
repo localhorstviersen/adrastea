@@ -1,15 +1,16 @@
 <?php
 
+namespace App\Libraries\TicketFields\Fields;
 
-namespace App\Libraries\TicketFields;
+use App\Libraries\TicketFields\Field;
 
 /**
- * Class TypeField
+ * Class StatusField
  *
  * @package App\Libraries\TicketFields
  * @author  Lars Riße <me@elyday.net>
  */
-class TypeField extends Field
+class StatusField extends Field
 {
     private array $options = [];
 
@@ -42,7 +43,7 @@ class TypeField extends Field
     }
 
     /**
-     * @param  array  $options
+     * @param array $options
      */
     public function setOptions(array $options): void
     {

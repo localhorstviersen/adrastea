@@ -26,14 +26,21 @@
         </div>
 
         <div class="form-group">
-            <label for="type"><?= lang('project.form.ticketFields.type.name') ?></label>
-            <select class="form-control" id="type" name="type" aria-describedby="typeHelp" required>
-                <?php foreach (\App\Models\Project\Ticket\Field::getTypes() as $key => $value): ?>
-                    <option value="<?= $key ?>" <?= $this->data['field']->type === $key ? 'selected'
+            <label for="ticketType"><?= lang('project.form.ticketFields.ticketType.name') ?></label>
+            <select multiple class="form-control" id="ticketType" name="ticketTypes[]" aria-describedby="ticketTypeHelp">
+                <?php foreach (\App\Models\Project\Ticket\Types::getTypes() as $key => $value): ?>
+                    <option value="<?= $key ?>" <?= in_array($key, $this->data['typeRelationIds']) ? 'selected'
                         : '' ?>><?= $value ?></option>
                 <?php endforeach; ?>
             </select>
-            <small id="typeHelp" class="form-text text-muted"><?= lang('project.form.ticketFields.type.help') ?></small>
+            <small id="ticketTypeHelp" class="form-text text-muted"><?= lang('project.form.ticketFields.ticketType.help') ?></small>
+        </div>
+
+        <div class="form-group" id="definitionPart" style="display: none;">
+            <label for="definition"><?= lang('project.form.ticketFields.definition.name') ?></label>
+            <input type="text" maxlength="50" class="form-control" id="definition" name="definition" aria-describedby="definition"
+                   value="<?= $this->data['field']->definition ?>">
+            <small id="definitionHelp" class="form-text text-muted"><?= lang('project.form.ticketFields.definition.help.default') ?></small>
         </div>
 
         <div class="form-group">
@@ -55,4 +62,28 @@
         <br>
         <input type="submit" name="submit" class="btn btn-primary" value="<?= lang('general.save') ?>">
     </form>
+<?= $this->endSection() ?>
+
+<?= $this->section('customJs') ?>
+    <script type="application/javascript">
+        let typeElement = document.getElementById('type');
+        typeElement.addEventListener('change', ev => onChange(ev.target));
+        onChange(typeElement);
+
+        function onChange(element) {
+            let definitionPart = document.getElementById('definitionPart');
+            let definitionHelp = document.getElementById('definitionHelp');
+            let value = element.value;
+
+            if (value === '<?= \App\Models\Project\Ticket\Field::TYPE_CHECK_BOX ?>' || value === '<?= \App\Models\Project\Ticket\Field::TYPE_RADIO_BOX ?>') {
+                definitionPart.style.display = '';
+                definitionHelp.innerHTML = '<?= lang('project.form.ticketFields.definition.help.selectFields') ?>';
+            } else if (value === '<?= \App\Models\Project\Ticket\Field::TYPE_PREDEFINED_LINK ?>') {
+                definitionPart.style.display = '';
+                definitionHelp.innerHTML = '<?= lang('project.form.ticketFields.definition.help.predefinedLinkField') ?>';
+            } else {
+                definitionPart.style.display = 'none';
+            }
+        }
+    </script>
 <?= $this->endSection() ?>
