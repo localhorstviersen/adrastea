@@ -13,7 +13,7 @@ use CodeIgniter\Database\Migration;
 class AddPriorityFieldToTicketStatus extends Migration
 {
     /** @inheritDoc */
-    public function up()
+    public function up(): void
     {
         $this->forge->addColumn(
             'project_ticket_status',
@@ -27,7 +27,7 @@ class AddPriorityFieldToTicketStatus extends Migration
     }
 
     /** @inheritDoc */
-    public function down()
+    public function down(): void
     {
         $this->forge->dropColumn('project_ticket_status', 'priority');
     }

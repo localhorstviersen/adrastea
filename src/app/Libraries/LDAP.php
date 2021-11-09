@@ -6,7 +6,6 @@ namespace App\Libraries;
 use Adldap\Adldap;
 use Adldap\Auth\BindException;
 use Adldap\Connections\Provider;
-use Adldap\Exceptions\AdldapException;
 use Adldap\Models\Group;
 use Adldap\Models\User;
 use App\Models\DTO\GroupData;
@@ -23,12 +22,12 @@ class LDAP
     /**
      * @var Adldap $adldap
      */
-    private $adldap;
+    private Adldap $adldap;
 
     /**
      * @var Provider $provider
      */
-    private $provider;
+    private Provider $provider;
 
     public function __construct()
     {
@@ -37,7 +36,7 @@ class LDAP
         $config = [
             'hosts' => $controllers,
             'base_dn' => env('ldap.base.dn'),
-            'account_suffix' => env('ldap.suffix')
+            'account_suffix' => env('ldap.suffix'),
         ];
         $this->adldap->addProvider($config);
     }
@@ -46,6 +45,7 @@ class LDAP
     {
         try {
             $this->provider = $this->adldap->connect('default', $username . env('ldap.suffix'), $password);
+
             return true;
         } catch (BindException $exception) {
             return false;
@@ -57,38 +57,25 @@ class LDAP
      *
      * @return UserData|null
      */
-    public function getUserData(string $username): ?UserData
+    public function getUserDataByUsername(string $username): ?UserData
     {
-        /** @var User $entry */
-        $entry = $this->provider->search()->users()->find($username);
+        /** @var User $user */
+        $user = $this->provider->search()->users()->find($username);
 
-        if ($entry instanceof User) {
-            $userData = new UserData();
-            $userData->sId = $this->sIdToString($entry->getObjectSid());
-            $userData->username = $entry->getUserPrincipalName();
-            $userData->firstName = $entry->getFirstName();
-            $userData->surname = $entry->getLastName();
-            $userData->mail = $entry->getEmail();
-
-            /** @var Group $group */
-            foreach ($entry->getGroups() as $group) {
-                $groupData = new GroupData();
-                $groupData->sID = $this->sIdToString($group->getObjectSid());
-                $groupData->name = $group->getName();
-                $userData->groups[] = $groupData;
-            }
-
-            return $userData;
-        }
-        return null;
+        return $this->buildUserData($user);
     }
 
     /**
-     * @return Adldap
+     * @param string $sId
+     *
+     * @return UserData|null
      */
-    public function getAdldap(): Adldap
+    public function getUserDataBySId(string $sId): ?UserData
     {
-        return $this->adldap;
+        /** @var User $user */
+        $user = $this->provider->search()->users()->findBySid($sId);
+
+        return $this->buildUserData($user);
     }
 
     /**
@@ -119,5 +106,34 @@ class LDAP
         }
 
         return 'S-' . $result;
+    }
+
+    /**
+     * @param User|null $entry
+     *
+     * @return UserData|null
+     */
+    public function buildUserData(?User $entry): ?UserData
+    {
+        if ($entry instanceof User) {
+            $userData = new UserData();
+            $userData->sId = $this->sIdToString($entry->getObjectSid());
+            $userData->username = $entry->getUserPrincipalName();
+            $userData->firstName = $entry->getFirstName();
+            $userData->surname = $entry->getLastName();
+            $userData->mail = $entry->getEmail();
+
+            /** @var Group $group */
+            foreach ($entry->getGroups() as $group) {
+                $groupData = new GroupData();
+                $groupData->sID = $this->sIdToString($group->getObjectSid());
+                $groupData->name = $group->getName();
+                $userData->groups[] = $groupData;
+            }
+
+            return $userData;
+        }
+
+        return null;
     }
 }

@@ -4,7 +4,8 @@ return [
     'table' => [
         'name' => 'Name',
         'mail' => 'E-Mail',
-        'firstLogin' => 'Erster Login'
+        'firstLogin' => 'Erster Login',
+        'deactivatedAt' => 'Deaktiviert am',
     ],
-    'notFound' => 'Benutzer wurde nicht gefunden.'
+    'notFound' => 'Benutzer wurde nicht gefunden.',
 ];
