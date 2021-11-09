@@ -8,7 +8,6 @@ use App\Controllers\CoreController;
 use App\Libraries\Util;
 use App\Models\Roles\Rights;
 use CodeIgniter\HTTP\RedirectResponse;
-use CodeIgniter\I18n\Time;
 use CodeIgniter\View\Table;
 
 /**
@@ -19,6 +18,9 @@ use CodeIgniter\View\Table;
  */
 class User extends CoreController
 {
+    /**
+     * @throws \Exception
+     */
     public function index()
     {
         $valid = $this->isRequestValid();
@@ -30,7 +32,7 @@ class User extends CoreController
         $this->global['title'] = lang('user.title');
 
         $customSettings = [
-            'table_open' => '<table class="table table-bordered" id="roles" width="100%" cellspacing="0">'
+            'table_open' => '<table class="table table-bordered" id="roles" width="100%" cellspacing="0">',
         ];
 
         $userModel = new \App\Models\User();
@@ -42,7 +44,8 @@ class User extends CoreController
                 lang('user.table.name'),
                 lang('user.table.mail'),
                 lang('user.table.firstLogin'),
-                ''
+                lang('user.table.deactivatedAt'),
+                '',
             ]
         );
 
@@ -56,7 +59,8 @@ class User extends CoreController
                     $user->firstName . ' ' . $user->surname,
                     $user->mail,
                     Util::formatDateTime($user->created_at),
-                    $assignUrl
+                    $user->deactivatedAt !== null ? Util::formatDateTime($user->deactivatedAt) : '-',
+                    $assignUrl,
                 ]
             );
         }
@@ -74,6 +78,7 @@ class User extends CoreController
 
         if (!$this->user->hasRight(Rights::RIGHT_GLOBAL_ADMIN_USER)) {
             $this->session->setFlashdata('errorForm', lang('general.noPermission'));
+
             return redirect()->to(site_url(''));
         }
 

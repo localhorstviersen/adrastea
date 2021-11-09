@@ -53,7 +53,8 @@ class UserData
             'username' => $this->username,
             'firstName' => $this->firstName,
             'surname' => $this->surname,
-            'mail' => $this->mail
+            'mail' => $this->mail,
+            'deactivatedAt' => null,
         ];
     }
 }

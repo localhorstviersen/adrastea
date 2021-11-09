@@ -13,26 +13,27 @@ use CodeIgniter\Model;
  * @package App\Models
  * @author  Lars Riße <me@elyday.net>
  *
- * @property string $sId
- * @property string $username
- * @property string $firstName
- * @property string $surname
- * @property string $mail
- * @property string $created_at
+ * @property string      $sId
+ * @property string      $username
+ * @property string      $firstName
+ * @property string      $surname
+ * @property string      $mail
+ * @property string      $created_at
+ * @property string|null $deactivatedAt
  */
 class User extends Model
 {
     protected $table = 'user';
     protected $returnType = self::class;
     protected $primaryKey = 'sId';
-    protected $allowedFields
-        = [
-            'sId',
-            'username',
-            'firstName',
-            'surname',
-            'mail'
-        ];
+    protected $allowedFields = [
+        'sId',
+        'username',
+        'firstName',
+        'surname',
+        'mail',
+        'deactivatedAt',
+    ];
     protected $useTimestamps = true;
 
     /**
@@ -53,7 +54,7 @@ class User extends Model
     }
 
     /**
-     * @param  UserData  $userData
+     * @param UserData $userData
      *
      * @return bool
      */
@@ -125,7 +126,7 @@ class User extends Model
     /**
      * This method will check if a user has the provided right.
      *
-     * @param  string  $right
+     * @param string $right
      *
      * @return bool
      */
@@ -137,7 +138,7 @@ class User extends Model
     /**
      * This method will check if a user has the provided rights.
      *
-     * @param  string  ...$rights
+     * @param string ...$rights
      *
      * @return bool
      */
@@ -185,8 +186,8 @@ class User extends Model
     /**
      * This method check if the user has the provided right on the provided project.
      *
-     * @param  Project  $project
-     * @param  string   $right
+     * @param Project $project
+     * @param string  $right
      *
      * @return bool
      */
