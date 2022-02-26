@@ -14,11 +14,11 @@ return [
         'ticket' => [
             'view' => [
                 'onlyOwn' => 'Kann nur eigene Tickets sehen',
-
             ],
             'manage' => 'Kann Tickets verwalten (erstellen, bearbeiten)',
             'delete' => 'Kann Tickets löschen',
+            'attachFiles' => 'Kann Anhänge zu Tickets hinzufügen',
         ],
-        'admin' => 'Projekt Admin'
-    ]
+        'admin' => 'Projekt Admin',
+    ],
 ];

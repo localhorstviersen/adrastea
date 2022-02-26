@@ -6,12 +6,17 @@ namespace App\Controllers\Project;
 
 use App\Controllers\CoreController;
 use App\Libraries\TicketFields\TicketFieldManager;
+use App\Libraries\Util;
+use App\Models\Attachment;
 use App\Models\Project;
 use App\Models\Project\Ticket;
 use App\Models\ProjectRoleRights;
 use App\Models\User;
+use CodeIgniter\Files\File;
+use CodeIgniter\HTTP\Files\UploadedFile;
 use CodeIgniter\HTTP\RedirectResponse;
 use CodeIgniter\View\Table;
+use Config\Services;
 
 /**
  * Class Backlog
@@ -217,11 +222,7 @@ class Backlog extends CoreController
             return $requestValid;
         }
 
-        if (!$this->user->hasProjectRight(
-            $this->project,
-            ProjectRoleRights::RIGHT_PROJECT_VIEW
-        )
-        ) {
+        if (!$this->user->hasProjectRight($this->project, ProjectRoleRights::RIGHT_PROJECT_VIEW)) {
             $this->session->setFlashdata('errorForm', lang('project.noRight'));
 
             return redirect()->to(
@@ -242,8 +243,88 @@ class Backlog extends CoreController
         $manager->initialize($this->project->getFields(), $this->ticket->getFieldValue('type'), true);
         $manager->hydrateFromTicket($this->ticket);
         $this->global['fields'] = $manager->getFields();
+        $this->global['attachmentTable'] = $this->createAttachmentTable();
 
         return view('pages/project/backlog/viewTicket', $this->global);
+    }
+
+    public function attachToTicket(int $projectId, int $ticketId)
+    {
+        $requestValid = $this->isRequestWithProjectAndTicketValid(
+            $projectId,
+            $ticketId
+        );
+
+        if ($requestValid !== null) {
+            return $requestValid;
+        }
+
+        if (!$this->user->hasProjectRight($this->project, ProjectRoleRights::RIGHT_PROJECT_TICKET_ATTACH_FILES)) {
+            $this->session->setFlashdata('errorForm', lang('backlog.noPermissions.attachments'));
+
+            return redirect()->to(site_url(sprintf('project/%d/backlog/view/%d', $projectId, $ticketId)));
+        }
+
+        $this->global['title'] = lang(
+            'backlog.attachments.title',
+            ['ticketTitle' => $this->ticket->getFieldValue('title')]
+        );
+
+        if (!$this->isPost()) {
+            return view('pages/project/backlog/attach', $this->global);
+        }
+
+        $validation = Services::validation();
+        $validation->setRuleGroup('projectTicketAttachmentsRules');
+
+        if (!$validation->withRequest($this->request)->run()) {
+            $errors = implode('<br>', $validation->getErrors());
+            $this->session->setFlashdata('errorForm', $errors);
+
+            return redirect()->to(
+                site_url(
+                    sprintf(
+                        'project/%d/backlog/view/%s/attach',
+                        $this->project->id,
+                        $this->ticket->id
+                    )
+                )
+            );
+        }
+
+        $files = $this->request->getFiles();
+
+        if (!$files || !isset($files['files'])) {
+            // TODO error
+        }
+
+        /** @var UploadedFile $file */
+        foreach ($files['files'] as $file) {
+            if (!$file->isValid() || $file->hasMoved()) {
+                continue;
+            }
+
+            $oldName = $file->getName();
+            $newName = $file->getRandomName();
+            $newPath = 'uploads/attachments';
+            $fullPath = sprintf('%s/%s', $newPath, $newName);
+
+            $file->move(sprintf('%s%s', WRITEPATH, $newPath), $newName);
+
+            $data = [
+                'referenceType' => Attachment::REFERENCE_TYPE_TICKET,
+                'referenceId' => $this->ticket->id,
+                'fileName' => $oldName,
+                'path' => $fullPath,
+                'uploadedBy' => $this->user->sId,
+            ];
+            $model = new Attachment();
+            $model->insert($data);
+        }
+
+        $this->session->setFlashdata('successForm', lang('backlog.attachments.form.success'));
+
+        return redirect()->to(site_url(sprintf('project/%d/backlog/view/%s', $projectId, $ticketId)));
     }
 
     /** @inheritDoc */
@@ -385,6 +466,37 @@ class Backlog extends CoreController
                     User::getFullNameBySId($ticket->getFieldValue('assign')),
                     User::getFullNameBySId($ticket->getFieldValue('reporter')),
                     sprintf('%s', $editUrl),
+                ]
+            );
+        }
+
+        return $table->generate();
+    }
+
+    /**
+     * @return string
+     */
+    private function createAttachmentTable(): string
+    {
+        $customSettings = [
+            'table_open' => '<table class="table table-bordered table-sm">',
+        ];
+
+        $table = new Table($customSettings);
+        $table->setHeading(['Name', 'Größe', 'Hochgeladen am', 'Hochgeladen von', '']);
+
+        $attachments = Attachment::getAttachmentsByTicket($this->ticket->id);
+
+        foreach ($attachments as $attachment) {
+            $file = new File(sprintf('%s%s', WRITEPATH, $attachment->path));
+
+            $table->addRow(
+                [
+                    $attachment->fileName,
+                    sprintf('%s MB', $file->getSizeByUnit('mb')),
+                    Util::formatDateTime($attachment->created_at),
+                    User::getFullNameBySId($attachment->uploadedBy),
+                    '',
                 ]
             );
         }

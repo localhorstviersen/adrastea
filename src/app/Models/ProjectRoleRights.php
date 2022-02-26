@@ -21,6 +21,7 @@ class ProjectRoleRights extends Model
 {
     public const RIGHT_PROJECT_VIEW = 'view';
     public const RIGHT_PROJECT_TICKET_ONLY_OWN_VIEW = 'ticket.view.onlyOwn';
+    public const RIGHT_PROJECT_TICKET_ATTACH_FILES = 'ticket.attachFiles';
     public const RIGHT_PROJECT_TICKET_MANAGE = 'ticket.manage';
     public const RIGHT_PROJECT_TICKET_DELETE = 'ticket.delete';
     public const RIGHT_PROJECT_ADMIN = 'admin';
@@ -38,7 +39,12 @@ class ProjectRoleRights extends Model
     {
         return [
             self::RIGHT_PROJECT_VIEW => lang('right.project.' . self::RIGHT_PROJECT_VIEW),
-            self::RIGHT_PROJECT_TICKET_ONLY_OWN_VIEW => lang('right.project.' . self::RIGHT_PROJECT_TICKET_ONLY_OWN_VIEW),
+            self::RIGHT_PROJECT_TICKET_ONLY_OWN_VIEW => lang(
+                sprintf('right.project.%s', self::RIGHT_PROJECT_TICKET_ONLY_OWN_VIEW)
+            ),
+            self::RIGHT_PROJECT_TICKET_ATTACH_FILES => lang(
+                sprintf('right.project.%s', self::RIGHT_PROJECT_TICKET_ATTACH_FILES)
+            ),
             self::RIGHT_PROJECT_TICKET_MANAGE => lang('right.project.' . self::RIGHT_PROJECT_TICKET_MANAGE),
             self::RIGHT_PROJECT_TICKET_DELETE => lang('right.project.' . self::RIGHT_PROJECT_TICKET_DELETE),
             self::RIGHT_PROJECT_ADMIN => lang('right.project.' . self::RIGHT_PROJECT_ADMIN),

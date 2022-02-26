@@ -209,4 +209,16 @@ class Validation
             ]
         ]
     ];
+
+    public array $projectTicketAttachmentsRules = [
+        'files' => [
+            'label' => 'backlog.attachments.form.files',
+            'rules' => 'uploaded[files]|max_size[files,51200]|mime_in[files,image/png,image/jpg,image/gif,application/pdf]',
+            'errors' => [
+                'uploaded' => 'backlog.attachments.form.errors.uploaded',
+                'mime_in' => 'backlog.attachments.form.errors.mime_in',
+                'max_size' => 'backlog.attachments.form.errors.max_size',
+            ],
+        ],
+    ];
 }

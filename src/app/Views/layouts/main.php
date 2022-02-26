@@ -67,8 +67,13 @@
 <script src="/assets/js/chart.min.js"></script>
 <script src="/assets/js/datatables.min.js"></script>
 <script src="/assets/js/sweetalert2.all.min.js"></script>
+<script src="/assets/js/bs-custom-file-input.js"></script>
 
 <script type="application/javascript">
+    $(document).ready(function () {
+        bsCustomFileInput.init()
+    });
+
     const Toast = Swal.mixin({
         toast: true,
         position: 'top-end',

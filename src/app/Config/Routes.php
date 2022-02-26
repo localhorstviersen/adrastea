@@ -95,6 +95,7 @@ $routes->group(
         // --- Controllers/Project/Backlog::class
         $routes->add('(:num)/backlog', 'Project\Backlog::index/$1');
         $routes->add('(:num)/backlog/view/(:num)', 'Project\Backlog::viewTicket/$1/$2');
+        $routes->add('(:num)/backlog/view/(:num)/attach', 'Project\Backlog::attachToTicket/$1/$2');
         $routes->add('(:num)/backlog/create/(:num)', 'Project\Backlog::createTicket/$1/$2');
         $routes->add('(:num)/backlog/edit/(:num)', 'Project\Backlog::editTicket/$1/$2');
 
